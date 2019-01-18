@@ -22,10 +22,16 @@ public class Game {
         this.state  = new GameState(board, players);
     }
 
+    public GameState getState() {
+        return this.state;
+    }
+
     public void play() {
         state.setStatus(Status.PLAYING);
         while (state.getStatus() == Status.PLAYING) {
+            System.out.println(board.stringRep());
             String move = state.currentPlayer().playMove(board);
+            System.out.println(move);
             this.playMove(move, state.currentPlayer + 1);
         }
         System.out.println(score());
@@ -51,6 +57,7 @@ public class Game {
                 state.setPassed(false);
                 return true;
             }
+            state.currentPlayer().wrongMove();
             return false;
         }
         System.out.println("Command not recognized");
@@ -87,9 +94,6 @@ public class Game {
     public Board getBoard() {
         return this.board;
     }
-
-
-
 
 
 }

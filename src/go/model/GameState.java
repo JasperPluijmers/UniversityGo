@@ -52,4 +52,8 @@ public class GameState {
         currentPlayer = (currentPlayer + 1) % players.size();
     }
 
+    public int getCurrentColour() {
+        return currentPlayer + 1;
+    }
+
 }

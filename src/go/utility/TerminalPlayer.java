@@ -14,17 +14,17 @@ public class TerminalPlayer implements Player {
         this.playerNumber = playerNumber;
     }
 
-    @Override
-    public String playMove() {
-        return readString(String.format("What is your move, player %d? (HELP for options)", playerNumber));
-    }
-
     public String playMove(Board board) {
         System.out.println(board);
-        return playMove();
+        return readMove(String.format("What is your move, player %d? (HELP for options)", playerNumber));
     }
 
-    private String readString(String prompt) {
+    @Override
+    public void wrongMove() {
+        System.out.println("Move invalid, please try again");
+    }
+
+    private String readMove(String prompt) {
         String value = "";
         boolean intRead = false;
         Scanner line = new Scanner(System.in);

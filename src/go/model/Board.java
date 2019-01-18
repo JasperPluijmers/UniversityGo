@@ -68,4 +68,17 @@ public class Board {
     public boolean isField(int index) {
         return index >= 0 && index < dimension * dimension;
     }
+
+    public String stringRep() {
+        return Arrays.toString(boardState).replace("[", "").replace("]", "").replace(" ", "").replace(",", "");
+    }
+
+    public void fromString(String stringRep) {
+        for (int i = 0; i < boardState.length; i++) {
+            setEntry(i, Integer.parseInt(stringRep.split("")[i]));
+        }
+        updateHistory();
+    }
+
+
 }

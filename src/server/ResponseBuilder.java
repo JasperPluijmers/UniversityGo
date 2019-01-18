@@ -20,4 +20,12 @@ public class ResponseBuilder {
     public static String requestConfig() {
         return "REQUEST_CONFIG+What color and board size would you like to play?";
     }
+
+    public static String unknownCommand() {
+        return "UNKNOWN_COMMAND+Command not recognized.";
+    }
+
+    public static String gameFinished(int gameId, String winner, String score, String message) {
+        return "GAME_FINISHED" + "+" + gameId + "+" + winner + "+" + score + "+" + message;
+    }
 }

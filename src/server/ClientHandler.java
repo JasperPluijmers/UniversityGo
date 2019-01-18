@@ -1,10 +1,12 @@
 package server;
 
+import go.controller.Game;
 import go.model.Board;
 import go.utility.Player;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Map;
 
 public class ClientHandler extends Thread implements Player {
 
@@ -16,8 +18,10 @@ public class ClientHandler extends Thread implements Player {
     private int gameId;
     private GameHandler gameHandler;
     private boolean turn;
+    private Game game;
     private String tempMove = null;
     private String username;
+    private int colour;
 
     public ClientHandler(Server server, Socket clientSocket) {
         this.server = server;
@@ -40,6 +44,8 @@ public class ClientHandler extends Thread implements Player {
             while ((inbound = inStream.readLine()) != null) {
                 if (isProtocol(inbound)) {
                     handleProtocol(inbound);
+                } else {
+                    talk(ResponseBuilder.unknownCommand());
                 }
             }
         } catch (IOException e) {
@@ -62,6 +68,7 @@ public class ClientHandler extends Thread implements Player {
     public boolean isProtocol(String message) {
         return message.matches(".*\\+.*");
     }
+
     public void handleProtocol(String message) {
         String[] command = message.split("\\+");
         switch (command[0]) {
@@ -75,17 +82,21 @@ public class ClientHandler extends Thread implements Player {
                 try {
                     gameHandler.setConfig(Integer.parseInt(command[2]), Integer.parseInt(command[3]));
                 } catch (NumberFormatException e) {
-                    talk("Config format not accepted, default settings used, you are black and boardsize is [7x7]");
+                    talk(ResponseBuilder.unknownCommand());
                     gameHandler.setConfig(1,7);
                 }
                 break;
             case "MOVE":
-                tempMove = "PLAY " + command[3];
-                System.out.println(tempMove);
-                break;
-            case "PASS":
-                tempMove = "PASS";
-                break;
+                    if (turn == true) {
+                        if (command[3].equals("-1")) {
+                            game.playMove("PASS", colour);
+                        } else {
+                            game.playMove("PLAY " + command[3], colour);
+                        }
+                        break;
+                    } else {
+                        talk("It is not your turn");
+                    }
             case "EXIT":
                 gameHandler.quit(this);
                 try {
@@ -109,33 +120,46 @@ public class ClientHandler extends Thread implements Player {
     }
 
     @Override
-    public String playMove(Board board) {
-        turn = true;
-        talk(ResponseBuilder.updateStatus(gameHandler.gameState()));
-        while (tempMove == null) {
-            try {
-                currentThread().sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            return tempMove;
-        } finally {
-            tempMove = null;
-        }
-    }
-
-
-
-
-    @Override
     public void wrongMove() {
         talk(ResponseBuilder.wrongMove());
     }
 
+    @Override
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public void requestMove(Board board) {
+        turn = true;
+    }
+
+    @Override
+    public void setColour(int colour) {
+        this.colour = colour;
+    }
+
+    @Override
+    public void updateState() {
+        talk(ResponseBuilder.updateStatus(gameHandler.gameState()));
+    }
+
+    @Override
+    public void finishGame(String winner, Map<Integer, Integer> score, String reason) {
+        talk(ResponseBuilder.gameFinished(gameId,winner,"1:"+score.get(1)+":2:"+score.get(2),reason));
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
     public String getUserName() {
         return this.username;
+    }
+
+    public int getColour() {
+        return this.colour;
     }
 
     public void setGameHandler(GameHandler gameHandler) {
@@ -149,4 +173,5 @@ public class ClientHandler extends Thread implements Player {
     public void setGameId(int gameId) {
         this.gameId = gameId;
     }
+
 }

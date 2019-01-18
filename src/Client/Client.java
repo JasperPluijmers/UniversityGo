@@ -58,7 +58,7 @@ public class Client extends Thread {
         this.inStream = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
         this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
 
-        this.talk("HANDSHAKE" + "+" + name);
+        this.talk(ResponseBuilder.handshake(name));
     }
 
 
@@ -70,6 +70,7 @@ public class Client extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            shutdown();
             System.exit(0);
         }
     }
@@ -80,6 +81,7 @@ public class Client extends Thread {
             this.outStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            shutdown();
         }
 
     }
@@ -89,6 +91,7 @@ public class Client extends Thread {
         switch (command[0]) {
             case "ACKNOWLEDGE_HANDSHAKE":
                 this.gameId = Integer.parseInt(command[1]);
+                System.out.println("GameId:" + command[1]);
                 break;
             case "ACKNOWLEDGE_CONFIG":
                 this.colour = Integer.parseInt(command[2]);
@@ -103,13 +106,15 @@ public class Client extends Thread {
             case "REQUEST_CONFIG":
                 makeConfig();
                 break;
+            case "GAME_FINISHED":
+                System.out.println(message);
+                break;
             default:
                 System.out.println("Not in protocol" + message);
         }
     }
 
     public void makeConfig() {
-        System.out.println("hoi");
         int prefColor = readInt("What is your preferred colour? black (1) or white (2)");
         int boardSize = readInt("What boardsize would you like?");
         board = new Board(boardSize);
@@ -117,8 +122,6 @@ public class Client extends Thread {
     }
 
     public void updateStatus(String status) {
-
-        System.out.println(status);
         String[] stati = status.split(";");
         if (board == null) {
             this.board = new Board((int)Math.sqrt(stati[2].length()));
@@ -135,10 +138,14 @@ public class Client extends Thread {
         if (turn == true && stati[0].equals("PLAYING")) {
             String move = readMove("Which place would you like to play?");
             if (move.equals("PASS")) {
-                talk(ResponseBuilder.pass(this.gameId, this.userName));
+                talk(ResponseBuilder.move(this.gameId,this.userName, "-1"));
             } else {
                 talk(ResponseBuilder.move(this.gameId,this.userName, move));
             }
+        }
+
+        if (turn == false && stati[0].equals("PLAYING")) {
+
         }
     }
     public void shutdown() {
@@ -156,19 +163,6 @@ public class Client extends Thread {
 
     private static void print(String message){
         System.out.println(message);
-    }
-
-    public static String readString(String tekst) {
-        System.out.print(tekst);
-        String antw = null;
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    System.in));
-            antw = in.readLine();
-        } catch (IOException e) {
-        }
-
-        return (antw == null) ? "" : antw;
     }
 
     private int readInt(String prompt) {

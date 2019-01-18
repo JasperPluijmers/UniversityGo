@@ -1,7 +1,9 @@
 package go.utility;
 
+import go.controller.Game;
 import go.model.Board;
 
+import java.util.Map;
 import java.util.Scanner;
 
 import static java.util.jar.Pack200.Packer.PASS;
@@ -9,19 +11,51 @@ import static java.util.jar.Pack200.Packer.PASS;
 public class TerminalPlayer implements Player {
 
     private final int playerNumber;
+    private Game game;
+    private int colour;
 
     public TerminalPlayer(int playerNumber) {
         this.playerNumber = playerNumber;
     }
 
-    public String playMove(Board board) {
+    public void playMove(Board board) {
         System.out.println(board);
-        return readMove(String.format("What is your move, player %d? (HELP for options)", playerNumber));
+        game.playMove(readMove(String.format("What is your move, player %d? (HELP for options)", playerNumber)), colour);
     }
 
     @Override
     public void wrongMove() {
         System.out.println("Move invalid, please try again");
+    }
+
+    @Override
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public void requestMove(Board board) {
+        playMove(board);
+    }
+
+    @Override
+    public void setColour(int colour) {
+        this.colour = colour;
+    }
+
+    @Override
+    public void updateState() {
+
+    }
+
+    @Override
+    public void finishGame(String winner, Map<Integer, Integer> score, String reason) {
+
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
     }
 
     private String readMove(String prompt) {

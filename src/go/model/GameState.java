@@ -10,7 +10,7 @@ public class GameState {
 
     private Board board;
     private List<Player> players;
-    public int currentPlayer;
+    private int currentPlayer;
     private Status status;
     private int turnNumber;
     private boolean passed;
@@ -54,6 +54,10 @@ public class GameState {
 
     public int getCurrentColour() {
         return currentPlayer + 1;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
 }

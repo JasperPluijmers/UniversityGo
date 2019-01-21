@@ -10,7 +10,7 @@ public class ResponseBuilder {
     }
 
     public static String updateStatus(String gameState) {
-        return "UPDATE_STATUS" + "+" + gameState;
+        return "UPDATE_STATUS+" + gameState;
     }
 
     public static String wrongMove() {
@@ -21,11 +21,15 @@ public class ResponseBuilder {
         return "REQUEST_CONFIG+What color and board size would you like to play?";
     }
 
-    public static String unknownCommand() {
-        return "UNKNOWN_COMMAND+Command not recognized.";
+    public static String unknownCommand(String message) {
+        return "UNKNOWN_COMMAND+" + message;
     }
 
     public static String gameFinished(int gameId, String winner, String score, String message) {
-        return "GAME_FINISHED" + "+" + gameId + "+" + winner + "+" + score + "+" + message;
+        return "GAME_FINISHED+" + gameId + "+" + winner + "+" + score + "+" + message;
+    }
+
+    public static String acknowledgeMove(int gameId, int move, int colour, String state) {
+        return "ACKNOWLEDGE_MOVE+" + gameId + "+" + move + ";" + colour + "+" + state;
     }
 }

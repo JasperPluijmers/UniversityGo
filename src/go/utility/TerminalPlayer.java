@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static java.util.jar.Pack200.Packer.PASS;
-
+//does not work right now
 public class TerminalPlayer implements Player {
 
     private final int playerNumber;
@@ -56,6 +56,11 @@ public class TerminalPlayer implements Player {
     @Override
     public String getUsername() {
         return null;
+    }
+
+    @Override
+    public void acknowledgeMove(int move, int colour) {
+
     }
 
     private String readMove(String prompt) {

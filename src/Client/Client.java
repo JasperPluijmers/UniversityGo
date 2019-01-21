@@ -66,6 +66,7 @@ public class Client extends Thread {
         String nextLine;
         try {
             while ((nextLine = this.inStream.readLine()) != null) {
+                //System.out.println("Recieved:" + nextLine);
                 handleProtocol(nextLine);
             }
         } catch (IOException e) {
@@ -77,7 +78,8 @@ public class Client extends Thread {
 
     public void talk(String message) {
         try {
-            this.outStream.write(message+'\n');
+            //System.out.println("send:" + message);
+            this.outStream.write(message + '\n');
             this.outStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,6 +99,9 @@ public class Client extends Thread {
                 this.colour = Integer.parseInt(command[2]);
                 updateStatus(command[4]);
                 break;
+            case "ACKNOWLEDGE_MOVE":
+                updateStatus(command[3]);
+                break;
             case "UPDATE_STATUS":
                 updateStatus(command[1]);
                 break;
@@ -107,24 +112,31 @@ public class Client extends Thread {
                 makeConfig();
                 break;
             case "GAME_FINISHED":
-                System.out.println(message);
+                gameFinished(command);
                 break;
             default:
                 System.out.println("Not in protocol" + message);
         }
     }
 
+    public void gameFinished(String[] message) {
+        String[] score = message[3].split(":");
+        System.out.println(message[2] + " won the game with id: " + message[1] + ".");
+        System.out.println("Black (1) got " + score[1] + " points.");
+        System.out.println("White (2) got " + score[3] + " points.");
+    }
+
     public void makeConfig() {
         int prefColor = readInt("What is your preferred colour? black (1) or white (2)");
         int boardSize = readInt("What boardsize would you like?");
         board = new Board(boardSize);
-        talk(ResponseBuilder.setConfig(gameId,prefColor,boardSize));
+        talk(ResponseBuilder.setConfig(gameId, prefColor, boardSize));
     }
 
     public void updateStatus(String status) {
         String[] stati = status.split(";");
         if (board == null) {
-            this.board = new Board((int)Math.sqrt(stati[2].length()));
+            this.board = new Board((int) Math.sqrt(stati[2].length()));
         }
 
         if (this.colour == Integer.parseInt(stati[1])) {
@@ -132,22 +144,23 @@ public class Client extends Thread {
         } else {
             turn = false;
         }
-        this.board.fromString(stati[2]);
-        System.out.println(board.toString());
 
-        if (turn == true && stati[0].equals("PLAYING")) {
-            String move = readMove("Which place would you like to play?");
-            if (move.equals("PASS")) {
-                talk(ResponseBuilder.move(this.gameId,this.userName, "-1"));
-            } else {
-                talk(ResponseBuilder.move(this.gameId,this.userName, move));
+        this.board.fromString(stati[2]);
+
+        if (stati[0].equals("PLAYING")) {
+            System.out.println(board.toString());
+
+            if (turn) {
+                String move = readMove("Which place would you like to play? HELP for options");
+                if (move.equals("PASS")) {
+                    talk(ResponseBuilder.move(this.gameId, this.userName, "-1"));
+                } else {
+                    talk(ResponseBuilder.move(this.gameId, this.userName, move));
+                }
             }
         }
-
-        if (turn == false && stati[0].equals("PLAYING")) {
-
-        }
     }
+
     public void shutdown() {
         print("Closing socket connection...");
         try {
@@ -161,7 +174,7 @@ public class Client extends Thread {
         return userName;
     }
 
-    private static void print(String message){
+    private static void print(String message) {
         System.out.println(message);
     }
 

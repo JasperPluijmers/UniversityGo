@@ -12,7 +12,6 @@ public class GameState {
     private List<Player> players;
     private int currentPlayer;
     private Status status;
-    private int turnNumber;
     private boolean passed;
 
     public GameState(Board board, List<Player> players) {
@@ -20,10 +19,11 @@ public class GameState {
         this.board = board;
         this.currentPlayer = 0;
         this.status = Status.WAITING;
-        this.turnNumber = 0;
         this.passed = false;
     }
-
+    public Board getBoard() {
+       return this.board;
+    }
     public boolean getPassed() {
         return this.passed;
     }
@@ -40,15 +40,11 @@ public class GameState {
         this.passed = passed;
     }
 
-    public void nextTurn() {
-        this.turnNumber++;
-    }
-
     public Player currentPlayer() {
         return players.get(currentPlayer);
     }
 
-    public void updateCurrent() {
+    public void nextPlayer() {
         currentPlayer = (currentPlayer + 1) % players.size();
     }
 

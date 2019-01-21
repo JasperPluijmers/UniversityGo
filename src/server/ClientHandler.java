@@ -45,7 +45,7 @@ public class ClientHandler extends Thread implements Player {
                 if (isProtocol(inbound)) {
                     handleProtocol(inbound);
                 } else {
-                    talk(ResponseBuilder.unknownCommand());
+                    talk(ResponseBuilder.unknownCommand("Command not recognized"));
                 }
             }
         } catch (IOException e) {
@@ -75,14 +75,20 @@ public class ClientHandler extends Thread implements Player {
             case "HANDSHAKE":
                 if (username == null) {
                     talk(ResponseBuilder.acknowledgeHandshake(gameId, leader));
+                    gameHandler.configPlayer(this);
                     this.username = command[1];
                 }
                 break;
             case "SET_CONFIG":
                 try {
-                    gameHandler.setConfig(Integer.parseInt(command[2]), Integer.parseInt(command[3]));
+                    if (Integer.parseInt(command[2]) == 1 || Integer.parseInt(command[2]) == 2) {
+                        gameHandler.setConfig(Integer.parseInt(command[2]), Integer.parseInt(command[3]));
+                    } else {
+                        talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
+                        gameHandler.setConfig(1,7);
+                    }
                 } catch (NumberFormatException e) {
-                    talk(ResponseBuilder.unknownCommand());
+                    talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
                     gameHandler.setConfig(1,7);
                 }
                 break;
@@ -151,11 +157,12 @@ public class ClientHandler extends Thread implements Player {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
-    public String getUserName() {
-        return this.username;
+    @Override
+    public void acknowledgeMove(int move, int colour) {
+        talk(ResponseBuilder.acknowledgeMove(gameId, move, colour, gameHandler.gameState()));
     }
 
     public int getColour() {

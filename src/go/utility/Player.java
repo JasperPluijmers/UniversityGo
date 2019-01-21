@@ -20,4 +20,6 @@ public interface Player {
     public void finishGame(String winner, Map<Integer, Integer> score, String reason);
 
     public String getUsername();
+
+    public void acknowledgeMove(int move, int colour);
 }

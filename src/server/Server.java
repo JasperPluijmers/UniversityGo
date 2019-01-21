@@ -34,11 +34,13 @@ public class Server {
 
             while (true) {
                 Socket firstPlayer = serverSocket.accept();
+
                 ClientHandler handlerOne = new ClientHandler(this, firstPlayer);
                 GameHandler gameHandler = new GameHandler(gameHandlers.size());
                 gameHandlers.add(gameHandler);
                 gameHandler.addPlayer(handlerOne);
                 Socket secondPlayer = serverSocket.accept();
+
                 ClientHandler handlerTwo = new ClientHandler(this, secondPlayer);
                 gameHandler.addPlayer (handlerTwo);
 

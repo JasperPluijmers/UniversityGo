@@ -1,9 +1,11 @@
 package client.gui.go.gui;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
@@ -97,6 +99,7 @@ public class GoGuiImpl extends Application {
 		initBoardLines();
 	}
 
+
 	private void initBoardLines() {
 		root.getChildren().removeAll(boardLines);
 		boardLines.clear();
@@ -161,6 +164,32 @@ public class GoGuiImpl extends Application {
 			board[x][y] = newStone;
 			root.getChildren().add(newStone);
 	}
+
+	public void addPlaceHolderStone(int x, int y) throws InvalidCoordinateException{
+		checkCoordinates(x, y);
+		removeStone(x, y);
+
+		Circle newStone = new Circle(((x + 1) * currentSquareSize), ((y + 1) * currentSquareSize),
+				currentSquareSize / 2);
+
+		newStone.setFill(Color.TRANSPARENT);
+		newStone.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				newStone.setStroke(Color.BLACK);
+			}
+		});
+
+		newStone.setOnMouseExited(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				newStone.setStroke(Color.TRANSPARENT);
+			}
+		});
+		board[x][y] = newStone;
+		root.getChildren().add(newStone);
+	}
+
 
 	protected void removeStone(int x, int y) throws InvalidCoordinateException {
 		checkCoordinates(x, y);

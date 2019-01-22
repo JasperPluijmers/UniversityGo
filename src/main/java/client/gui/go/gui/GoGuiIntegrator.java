@@ -15,6 +15,9 @@ public class GoGuiIntegrator implements GoGui {
 	public GoGuiIntegrator(int boardSize) {
 		createWrappedObject();
 		wrappee.setInitialBoardSize(boardSize);
+		for (int i = 0; i < boardSize*boardSize; i++) {
+			addPlaceholderStone(i);
+		}
 	}
 
 	@Override
@@ -35,6 +38,22 @@ public class GoGuiIntegrator implements GoGui {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	public synchronized void addPlaceholderStone(int x, int y) {
+		Platform.runLater(() -> {
+			try {
+				wrappee.addPlaceHolderStone(x, y);
+			} catch (InvalidCoordinateException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	public synchronized void addPlaceholderStone(int index) {
+		int x = index % getBoardSize();
+		int y = index / getBoardSize();
+		addPlaceholderStone(x, y);
 	}
 
 	public synchronized void addStone(int index, int colour) {

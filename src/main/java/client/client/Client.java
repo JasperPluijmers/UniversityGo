@@ -87,6 +87,7 @@ public class Client extends Thread {
                 break;
             case "INVALID_MOVE":
                 System.out.println(command[1]);
+                askMove();
                 break;
             case "REQUEST_CONFIG":
                 makeConfig();

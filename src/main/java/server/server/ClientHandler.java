@@ -1,4 +1,4 @@
-package server;
+package server.server;
 
 import go.controller.Game;
 import go.model.Board;
@@ -38,7 +38,7 @@ public class ClientHandler extends Thread implements Player {
 
     public void run () {
         try {
-            server.log("Client detected...");
+            server.log("client detected...");
 
             String inbound;
             while ((inbound = inStream.readLine()) != null) {

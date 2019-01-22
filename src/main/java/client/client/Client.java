@@ -1,8 +1,8 @@
-package Client;
+package client.client;
 
+import client.gui.go.gui.GoGuiIntegrator;
 import go.model.Board;
 
-import javax.xml.ws.Response;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,35 +10,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 
 public class Client extends Thread {
-    public static void main(String[] args) {
-
-        InetAddress host = null;
-
-        try {
-            host = InetAddress.getByName("localhost");
-        } catch (UnknownHostException e) {
-            print("ERROR: no valid hostname!");
-            System.exit(0);
-        }
-
-        try {
-            Client client = new Client("Jasper", host, 3001);
-            client.start();
-
-            do {
-            } while (true);
-
-        } catch (IOException e) {
-            print("ERROR: couldn't construct a client object!");
-            System.exit(0);
-        }
-
-    }
 
     private String userName;
     private Socket sock;
@@ -48,8 +23,10 @@ public class Client extends Thread {
     private int colour;
     private Board board;
     private boolean turn;
+    private GoGuiIntegrator gui;
+    private boolean hasGui;
 
-    public Client(String name, InetAddress host, int port)
+    public Client(String name, InetAddress host, int port, boolean hasGui)
             throws IOException {
 
         this.userName = name;
@@ -59,6 +36,9 @@ public class Client extends Thread {
         this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
 
         this.talk(ResponseBuilder.handshake(name));
+
+        this.hasGui = hasGui;
+
     }
 
 
@@ -96,7 +76,7 @@ public class Client extends Thread {
                 System.out.println("GameId:" + command[1]);
                 break;
             case "ACKNOWLEDGE_CONFIG":
-                this.colour = Integer.parseInt(command[2]);
+                processConfig(command);
                 updateStatus(command[4]);
                 break;
             case "ACKNOWLEDGE_MOVE":
@@ -119,6 +99,15 @@ public class Client extends Thread {
         }
     }
 
+    public void processConfig(String[] config) {
+        this.colour = Integer.parseInt(config[2]);
+        this.board = new Board(Integer.parseInt(config[3]));
+        if (hasGui) {
+            gui = new GoGuiIntegrator(Integer.parseInt(config[3]));
+            gui.startGUI();
+        }
+    }
+
     public void gameFinished(String[] message) {
         String[] score = message[3].split(":");
         System.out.println(message[2] + " won the game with id: " + message[1] + ".");
@@ -135,9 +124,6 @@ public class Client extends Thread {
 
     public void updateStatus(String status) {
         String[] stati = status.split(";");
-        if (board == null) {
-            this.board = new Board((int) Math.sqrt(stati[2].length()));
-        }
 
         if (this.colour == Integer.parseInt(stati[1])) {
             turn = true;
@@ -147,16 +133,38 @@ public class Client extends Thread {
 
         this.board.fromString(stati[2]);
 
-        if (stati[0].equals("PLAYING")) {
-            System.out.println(board.toString());
+        if (hasGui) {
+            updateGui(stati[2]);
+        }
 
-            if (turn) {
-                String move = readMove("Which place would you like to play? HELP for options");
-                if (move.equals("PASS")) {
-                    talk(ResponseBuilder.move(this.gameId, this.userName, "-1"));
-                } else {
-                    talk(ResponseBuilder.move(this.gameId, this.userName, move));
-                }
+        if (stati[0].equals("PLAYING")) {
+            askMove();
+        }
+    }
+
+    public void askMove() {
+        System.out.println(board.toString());
+
+        if (turn) {
+            String move = readMove("Which place would you like to play? HELP for options");
+            if (move.equals("PASS")) {
+                talk(ResponseBuilder.move(this.gameId, this.userName, "-1"));
+            } else {
+                talk(ResponseBuilder.move(this.gameId, this.userName, move));
+            }
+        }
+    }
+
+    public void updateGui(String boardString) {
+        gui.clearBoard();
+        for (int i = 0; i < boardString.length(); i++) {
+            switch (boardString.charAt(i)) {
+                case '1':
+                    gui.addStone(i,1);
+                    break;
+                case '2':
+                    gui.addStone(i,2);
+                    break;
             }
         }
     }

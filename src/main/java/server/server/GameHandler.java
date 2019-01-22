@@ -1,4 +1,4 @@
-package server;
+package server.server;
 
 
 import go.controller.Game;

@@ -22,9 +22,6 @@ public class main {
             Client client = new Client("Jasper", host, 3001, true);
             client.start();
 
-            do {
-            } while (true);
-
         } catch (IOException e) {
             System.out.println("ERROR: couldn't construct a client object!");
             System.exit(0);

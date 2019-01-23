@@ -95,14 +95,18 @@ public class ClientHandler extends Thread implements Player {
             case "MOVE":
                     if (turn == true) {
                         if (command[3].equals("-1")) {
-                            game.playMove("PASS", colour);
+                            if (game.playMove("PASS", colour)) {
+                                turn = false;
+                            }
                         } else {
-                            game.playMove("PLAY " + command[3], colour);
+                            if (game.playMove("PLAY " + command[3], colour)) {
+                                turn = false;
+                            }
                         }
-                        break;
                     } else {
-                        talk("It is not your turn");
+                        talk(ResponseBuilder.wrongMove());
                     }
+                    break;
             case "EXIT":
                 gameHandler.quit(this);
                 try {

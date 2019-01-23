@@ -1,17 +1,20 @@
 package client.gui.go.gui;
 
+import client.client.Client;
+import client.gui.go.gui.utilities.ClickListener;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +34,10 @@ public class GoGuiImpl extends Application {
 	private Group root = null;
 	private Stage primaryStage = null;
 	private Node hint = null;
+	private boolean turn;
+	private Button passButton;
 
-	private final PhongMaterial blackMaterial = new PhongMaterial();
-	private final PhongMaterial whiteMaterial = new PhongMaterial();
-	private final PhongMaterial yellowMaterial = new PhongMaterial();
+	private ClickListener passButtonListener;
 
 	private static final CountDownLatch waitForConfigurationLatch = new CountDownLatch(1);
 	private static final CountDownLatch initializationLatch = new CountDownLatch(1);
@@ -57,7 +60,6 @@ public class GoGuiImpl extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		instance = this;
-		initDrawMaterials();
 
 		try {
 			waitForConfigurationLatch.await();
@@ -71,18 +73,12 @@ public class GoGuiImpl extends Application {
 
 		initNewBoard();
 		initializationLatch.countDown();
+		addPassButton();
 
 	}
-
-	private void initDrawMaterials() {
-		blackMaterial.setDiffuseColor(Color.BLACK);
-		blackMaterial.setSpecularColor(Color.LIGHTBLUE);
-		whiteMaterial.setDiffuseColor(Color.WHITE);
-		whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
-		yellowMaterial.setDiffuseColor(Color.YELLOW);
-		yellowMaterial.setSpecularColor(Color.LIGHTBLUE);
+	public void setPassButtonListener(ClickListener clickListener) {
+		this.passButtonListener = clickListener;
 	}
-
 
 	private void initNewBoard() {
 		root = new Group();
@@ -95,11 +91,16 @@ public class GoGuiImpl extends Application {
 
 		//ImagePattern pattern = new ImagePattern(new Image("background_1920.jpg"));
 		scene.setFill(new Color(0.625,0.473,0.238,1));
-
 		initBoardLines();
 	}
 
-
+	private void addPassButton(){
+		passButton = new Button("Pass");
+		passButton.setLayoutX(currentSquareSize);
+		passButton.setLayoutY(0);
+		passButton.setOnMouseClicked(event -> passButtonListener.onclick());
+		root.getChildren().add(passButton);
+	}
 	private void initBoardLines() {
 		root.getChildren().removeAll(boardLines);
 		boardLines.clear();
@@ -126,30 +127,10 @@ public class GoGuiImpl extends Application {
 		root.getChildren().add(hint);
 	}
 
-	private void drawDiagonalStoneLine(int diagonal, int colour, boolean flip) {
-		try {
-			for (int x = 0; x < currentBoardSize; x++) {
-				for (int y = 0; y < currentBoardSize; y++) {
-					if (x + y == diagonal * 2) {
-						if (!flip) {
-							addStone(x, y, colour);
-						} else {
-							addStone(currentBoardSize - 1 - x, y, colour);
-						}
-					}
-				}
-			}
-		} catch (InvalidCoordinateException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
 	protected void addStone(int x, int y, int colour) throws InvalidCoordinateException {
 		checkCoordinates(x, y);
 		removeStone(x, y);
-
-
-			Circle newStone = new Circle(((x + 1) * currentSquareSize), ((y + 1) * currentSquareSize),
+		Circle newStone = new Circle(((x + 1) * currentSquareSize), ((y + 1) * currentSquareSize),
 					currentSquareSize / 2);
 
 			switch (colour) {
@@ -165,7 +146,12 @@ public class GoGuiImpl extends Application {
 			root.getChildren().add(newStone);
 	}
 
-	public void addPlaceHolderStone(int x, int y) throws InvalidCoordinateException{
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+		passButton.setDisable(!turn);
+	}
+
+	public void addPlaceHolderStone(int x, int y, Client client) throws InvalidCoordinateException{
 		checkCoordinates(x, y);
 		removeStone(x, y);
 
@@ -173,19 +159,28 @@ public class GoGuiImpl extends Application {
 				currentSquareSize / 2);
 
 		newStone.setFill(Color.TRANSPARENT);
-		newStone.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				newStone.setStroke(Color.BLACK);
-			}
-		});
+		if (turn) {
+			newStone.setOnMouseEntered(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					newStone.setStroke(Color.BLACK);
+				}
+			});
 
-		newStone.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				newStone.setStroke(Color.TRANSPARENT);
-			}
-		});
+			newStone.setOnMouseExited(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					newStone.setStroke(Color.TRANSPARENT);
+				}
+			});
+
+			newStone.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					client.clickMove(y * currentBoardSize + x);
+				}
+			});
+		}
 		board[x][y] = newStone;
 		root.getChildren().add(newStone);
 	}
@@ -203,7 +198,6 @@ public class GoGuiImpl extends Application {
 	protected void addAreaIndicator(int x, int y, int colour) throws InvalidCoordinateException {
 		checkCoordinates(x, y);
 		removeStone(x, y);
-
 
 			Rectangle areaStone = new Rectangle(((x + 1) * currentSquareSize) - currentSquareSize / 6,
 					((y + 1) * currentSquareSize) - currentSquareSize / 6, currentSquareSize / 3,
@@ -243,11 +237,12 @@ public class GoGuiImpl extends Application {
 		}
 	}
 
-	protected void clearBoard() {
+	protected void clearBoard(Client client) {
 		try {
 			for (int x = 0; x < currentBoardSize; x++) {
 				for (int y = 0; y < currentBoardSize; y++) {
 					removeStone(x, y);
+					addPlaceHolderStone(x,y,client);
 				}
 			}
 		} catch (InvalidCoordinateException e) {
@@ -256,7 +251,6 @@ public class GoGuiImpl extends Application {
 	}
 
 	protected void setBoardSize(int size) {
-		currentBoardSize = size;
 		currentBoardSize = size;
 
 		initNewBoard();

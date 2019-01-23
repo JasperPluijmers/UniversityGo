@@ -104,7 +104,7 @@ public class Client extends Thread {
         this.colour = Integer.parseInt(config[2]);
         this.board = new Board(Integer.parseInt(config[3]));
         if (hasGui) {
-            gui = new GoGuiIntegrator(Integer.parseInt(config[3]));
+            gui = new GoGuiIntegrator(Integer.parseInt(config[3]), this);
             gui.startGUI();
         }
     }
@@ -128,8 +128,11 @@ public class Client extends Thread {
 
         if (this.colour == Integer.parseInt(stati[1])) {
             turn = true;
+            askMove();
+
         } else {
             turn = false;
+            gui.setTurn(turn);
         }
 
         this.board.fromString(stati[2]);
@@ -137,22 +140,28 @@ public class Client extends Thread {
         if (hasGui) {
             updateGui(stati[2]);
         }
+    }
 
-        if (stati[0].equals("PLAYING")) {
-            askMove();
+    public void clickMove(int index) {
+        if (turn == true) {
+            talk(ResponseBuilder.move(this.gameId, this.userName, String.valueOf(index)));
         }
     }
 
     public void askMove() {
-        System.out.println(board.toString());
+        if (!hasGui) {
+            System.out.println(board.toString());
 
-        if (turn) {
-            String move = readMove("Which place would you like to play? HELP for options");
-            if (move.equals("PASS")) {
-                talk(ResponseBuilder.move(this.gameId, this.userName, "-1"));
-            } else {
-                talk(ResponseBuilder.move(this.gameId, this.userName, move));
+            if (turn) {
+                String move = readMove("Which place would you like to play? HELP for options");
+                if (move.equals("PASS")) {
+                    talk(ResponseBuilder.move(this.gameId, this.userName, "-1"));
+                } else {
+                    talk(ResponseBuilder.move(this.gameId, this.userName, move));
+                }
             }
+        } else {
+            gui.setTurn(true);
         }
     }
 

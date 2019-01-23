@@ -1,10 +1,14 @@
 package client.gui.go.gui;
 
+import client.client.Client;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class GoGuiIntegrator implements GoGui {
 
 	private GoGuiImpl wrappee;
+	private Client client;
 
 	/**
 	 * Creates a GoGUIIntegrator that is capable of configuring and controlling the
@@ -12,12 +16,12 @@ public class GoGuiIntegrator implements GoGui {
 	 *
 	 * @param boardSize            the desired initial board size.
 	 */
-	public GoGuiIntegrator(int boardSize) {
+	public GoGuiIntegrator(int boardSize, Client client) {
 		createWrappedObject();
 		wrappee.setInitialBoardSize(boardSize);
-		for (int i = 0; i < boardSize*boardSize; i++) {
-			addPlaceholderStone(i);
-		}
+		this.client = client;
+
+		wrappee.setPassButtonListener(() -> client.clickMove(-1));
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class GoGuiIntegrator implements GoGui {
 	public synchronized void addPlaceholderStone(int x, int y) {
 		Platform.runLater(() -> {
 			try {
-				wrappee.addPlaceHolderStone(x, y);
+				wrappee.addPlaceHolderStone(x, y, client);
 			} catch (InvalidCoordinateException e) {
 				e.printStackTrace();
 			}
@@ -60,6 +64,13 @@ public class GoGuiIntegrator implements GoGui {
 		int x = index % getBoardSize();
 		int y = index / getBoardSize();
 		addStone(x, y, colour );
+	}
+
+	public synchronized void setTurn(boolean turn) {
+
+			Platform.runLater(() -> {
+				wrappee.setTurn(turn);
+			});
 	}
 
 	@Override
@@ -102,7 +113,7 @@ public class GoGuiIntegrator implements GoGui {
 
 	@Override
 	public synchronized void clearBoard() {
-		Platform.runLater(() -> wrappee.clearBoard());
+		Platform.runLater(() -> wrappee.clearBoard(client));
 	}
 
 	@Override

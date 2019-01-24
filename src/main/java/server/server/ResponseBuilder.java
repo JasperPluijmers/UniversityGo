@@ -1,12 +1,14 @@
 package server.server;
 
+import go.utility.Colour;
+
 public class ResponseBuilder {
     public static String acknowledgeHandshake(int gameId, boolean isLeader) {
         return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" +isLeader;
     }
 
-    public static String acknowledgeConfig(String username, int colour, int dimension, String gameState) {
-        return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour + "+" + dimension + "+" + gameState;
+    public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState) {
+        return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour.getValue() + "+" + dimension + "+" + gameState;
     }
 
     public static String updateStatus(String gameState) {
@@ -29,7 +31,7 @@ public class ResponseBuilder {
         return "GAME_FINISHED+" + gameId + "+" + winner + "+" + score + "+" + message;
     }
 
-    public static String acknowledgeMove(int gameId, int move, int colour, String state) {
-        return "ACKNOWLEDGE_MOVE+" + gameId + "+" + move + ";" + colour + "+" + state;
+    public static String acknowledgeMove(int gameId, int move, Colour colour, String state) {
+        return "ACKNOWLEDGE_MOVE+" + gameId + "+" + move + ";" + colour.getValue() + "+" + state;
     }
 }

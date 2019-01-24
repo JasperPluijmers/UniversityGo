@@ -1,5 +1,7 @@
 package client.gui.go.gui;
 
+import go.utility.Colour;
+
 public interface GoGui {
 
     /**
@@ -18,7 +20,7 @@ public interface GoGui {
      * @param colour colour of the stone
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
      */
-    void addStone(int x, int y, int colour) throws InvalidCoordinateException;
+    void addStone(int x, int y, Colour colour) throws InvalidCoordinateException;
 
     /**
      * Removes any existing stone at the given position.
@@ -37,7 +39,7 @@ public interface GoGui {
      * @param colour the colour of the area indicator
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
      */
-    void addAreaIndicator(int x, int y, int colour) throws InvalidCoordinateException;
+    void addAreaIndicator(int x, int y, Colour colour) throws InvalidCoordinateException;
 
     /**
      * Adds a hint indicator to the board of the given type and at the given position.

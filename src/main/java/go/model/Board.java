@@ -1,5 +1,7 @@
 package go.model;
 
+import go.utility.Colour;
+
 import java.util.*;
 
 public class Board {
@@ -26,15 +28,15 @@ public class Board {
     }
 
     public boolean isempty(int index) {
-        return getEntry(index) == 0;
+        return getEntry(index) == Colour.EMPTY;
     }
 
-    public int getEntry(int index) {
-        return boardState[index];
+    public Colour getEntry(int index) {
+        return Colour.getByInt(boardState[index]);
     }
 
-    public void setEntry(int index, int colour) {
-        this.boardState[index] = colour;
+    public void setEntry(int index, Colour colour) {
+        this.boardState[index] = colour.getValue();
     }
 
     public ArrayList<int[]> getHistory() {
@@ -75,7 +77,7 @@ public class Board {
 
     public void fromString(String stringRep) {
         for (int i = 0; i < boardState.length; i++) {
-            setEntry(i, Integer.parseInt(stringRep.split("")[i]));
+            setEntry(i, Colour.getByInt(Integer.parseInt(stringRep.split("")[i])));
         }
         updateHistory();
     }

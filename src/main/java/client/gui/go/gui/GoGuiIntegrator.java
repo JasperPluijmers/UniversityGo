@@ -1,6 +1,8 @@
 package client.gui.go.gui;
 
 import client.client.Client;
+import client.gui.go.gui.utilities.WinScreen;
+import go.utility.Colour;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -14,7 +16,7 @@ public class GoGuiIntegrator implements GoGui {
 	 * Creates a GoGUIIntegrator that is capable of configuring and controlling the
 	 * GO GUI.
 	 *
-	 * @param boardSize            the desired initial board size.
+	 * @param boardSize the desired initial board size.
 	 */
 	public GoGuiIntegrator(int boardSize, Client client) {
 		createWrappedObject();
@@ -34,7 +36,7 @@ public class GoGuiIntegrator implements GoGui {
 	}
 
 	@Override
-	public synchronized void addStone(int x, int y, int colour) {
+	public synchronized void addStone(int x, int y, Colour colour) {
 		Platform.runLater(() -> {
 			try {
 				wrappee.addStone(x, y, colour);
@@ -60,17 +62,31 @@ public class GoGuiIntegrator implements GoGui {
 		addPlaceholderStone(x, y);
 	}
 
-	public synchronized void addStone(int index, int colour) {
+	public synchronized void addStone(int index, Colour colour) {
 		int x = index % getBoardSize();
 		int y = index / getBoardSize();
-		addStone(x, y, colour );
+		addStone(x, y, colour);
+	}
+	public synchronized void highlightStone(int x, int y) {
+		Platform.runLater(() -> {
+			try {
+				wrappee.highlightStone(x, y);
+			} catch (InvalidCoordinateException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+	public synchronized void highlightStone(int index) {
+		int x = index % getBoardSize();
+		int y = index / getBoardSize();
+		highlightStone(x,y);
 	}
 
 	public synchronized void setTurn(boolean turn) {
 
-			Platform.runLater(() -> {
-				wrappee.setTurn(turn);
-			});
+		Platform.runLater(() -> {
+			wrappee.setTurn(turn);
+		});
 	}
 
 	@Override
@@ -85,7 +101,7 @@ public class GoGuiIntegrator implements GoGui {
 	}
 
 	@Override
-	public synchronized void addAreaIndicator(int x, int y, int colour) {
+	public synchronized void addAreaIndicator(int x, int y, Colour colour) {
 		Platform.runLater(() -> {
 			try {
 				wrappee.addAreaIndicator(x, y, colour);
@@ -148,4 +164,12 @@ public class GoGuiIntegrator implements GoGui {
 		createWrappedObject();
 		wrappee.countDownConfigurationLatch();
 	}
-}
+
+	public synchronized void winScreen(String winString) {
+		Platform.runLater(() -> {
+
+			wrappee.winScreen(winString);
+		});
+	}
+	}
+

@@ -2,6 +2,8 @@ package client.gui.go.gui;
 
 import client.client.Client;
 import client.gui.go.gui.utilities.ClickListener;
+import client.gui.go.gui.utilities.WinScreen;
+import go.utility.Colour;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -9,10 +11,12 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -89,7 +93,6 @@ public class GoGuiImpl extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		//ImagePattern pattern = new ImagePattern(new Image("background_1920.jpg"));
 		scene.setFill(new Color(0.625,0.473,0.238,1));
 		initBoardLines();
 	}
@@ -127,17 +130,17 @@ public class GoGuiImpl extends Application {
 		root.getChildren().add(hint);
 	}
 
-	protected void addStone(int x, int y, int colour) throws InvalidCoordinateException {
+	protected void addStone(int x, int y, Colour colour) throws InvalidCoordinateException {
 		checkCoordinates(x, y);
 		removeStone(x, y);
 		Circle newStone = new Circle(((x + 1) * currentSquareSize), ((y + 1) * currentSquareSize),
 					currentSquareSize / 2);
 
 			switch (colour) {
-				case 2:
+				case WHITE:
 				newStone.setFill(Color.WHITE);
 				break;
-				case 1:
+				case BLACK:
 				newStone.setFill(Color.BLACK);
 				break;
 			}
@@ -185,6 +188,13 @@ public class GoGuiImpl extends Application {
 		root.getChildren().add(newStone);
 	}
 
+	public void highlightStone(int x, int y) throws InvalidCoordinateException {
+		checkCoordinates(x,y);
+		Circle currentCircle = (Circle)board[x][y];
+		currentCircle.setStroke(Color.GREEN);
+		currentCircle.setStrokeWidth(5);
+	}
+
 
 	protected void removeStone(int x, int y) throws InvalidCoordinateException {
 		checkCoordinates(x, y);
@@ -195,7 +205,7 @@ public class GoGuiImpl extends Application {
 		board[x][y] = null;
 	}
 
-	protected void addAreaIndicator(int x, int y, int colour) throws InvalidCoordinateException {
+	protected void addAreaIndicator(int x, int y, Colour colour) throws InvalidCoordinateException {
 		checkCoordinates(x, y);
 		removeStone(x, y);
 
@@ -203,10 +213,10 @@ public class GoGuiImpl extends Application {
 					((y + 1) * currentSquareSize) - currentSquareSize / 6, currentSquareSize / 3,
 					currentSquareSize / 3);
 			switch (colour) {
-				case 1:
+				case BLACK:
 					areaStone.setFill(Color.BLACK);
 					break;
-				case 2:
+				case WHITE:
 					areaStone.setFill(Color.WHITE);
 					break;
 			}
@@ -286,4 +296,21 @@ public class GoGuiImpl extends Application {
 		}
 	}
 
+	public void winScreen(String winString) {
+		StackPane secondaryLayout = new StackPane();
+
+		secondaryLayout.getChildren().add(new Text(winString));
+
+		Scene secondScene = new Scene(secondaryLayout, 230, 100);
+		// New window (Stage)
+		Stage newWindow = new Stage();
+		newWindow.setTitle("Game finished");
+		newWindow.setScene(secondScene);
+
+				// Set position of second window, related to primary window.
+		newWindow.setX(primaryStage.getX() + 200);
+		newWindow.setY(primaryStage.getY() + 100);
+
+		newWindow.show();
+	}
 }

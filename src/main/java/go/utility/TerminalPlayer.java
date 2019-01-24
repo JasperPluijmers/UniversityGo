@@ -12,7 +12,7 @@ public class TerminalPlayer implements Player {
 
     private final int playerNumber;
     private Game game;
-    private int colour;
+    private Colour colour;
 
     public TerminalPlayer(int playerNumber) {
         this.playerNumber = playerNumber;
@@ -39,7 +39,7 @@ public class TerminalPlayer implements Player {
     }
 
     @Override
-    public void setColour(int colour) {
+    public void setColour(Colour colour) {
         this.colour = colour;
     }
 
@@ -59,7 +59,7 @@ public class TerminalPlayer implements Player {
     }
 
     @Override
-    public void acknowledgeMove(int move, int colour) {
+    public void acknowledgeMove(int move, Colour colour) {
 
     }
 

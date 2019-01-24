@@ -1,5 +1,7 @@
 package go.model;
 
+import go.utility.Colour;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,29 +9,29 @@ import java.util.Set;
 
 public class Group {
 
-    private Map<Integer, Set<Integer>> neighbours;
+    private Map<Colour, Set<Integer>> neighbours;
     private Set<Integer> groupMembers;
-    private int flavour;
+    private Colour colour;
 
-    public Group(int flavour) {
-        this.flavour = flavour;
+    public Group(Colour colour) {
+        this.colour = colour;
         this.neighbours = new HashMap<>();
         this.groupMembers = new HashSet<>();
 
-        this.neighbours.put(0,new HashSet<>());
-        this.neighbours.put(1,new HashSet<>());
-        this.neighbours.put(2,new HashSet<>());
+        this.neighbours.put(Colour.EMPTY,new HashSet<>());
+        this.neighbours.put(Colour.BLACK,new HashSet<>());
+        this.neighbours.put(Colour.WHITE,new HashSet<>());
     }
 
-    public int getFlavour() {
-        return this.flavour;
+    public Colour getColour() {
+        return this.colour;
     }
 
     public Set<Integer> getGroupMembers() {
         return this.groupMembers;
     }
 
-    public Map<Integer, Set<Integer>> getNeighbours() {
+    public Map<Colour, Set<Integer>> getNeighbours() {
         return this.neighbours;
     }
 
@@ -37,21 +39,18 @@ public class Group {
         this.groupMembers.add(index);
     }
 
-    public void addNeighbour(int index, int flavour) {
-        neighbours.get(flavour).add(index);
+    public void addNeighbour(int index, Colour colour) {
+        neighbours.get(colour).add(index);
 
     }
 
     public int freedoms() {
-        if (!neighbours.containsKey(0)) {
-            return 0;
-        } else {
-            return neighbours.get(0).size();
-        }
+        return neighbours.get(Colour.EMPTY).size();
+
     }
 
     @Override
     public String toString() {
-        return String.format("Group of %d, containing:" + groupMembers,flavour);
+        return String.format("Group of %d, containing:" + groupMembers, colour);
     }
 }

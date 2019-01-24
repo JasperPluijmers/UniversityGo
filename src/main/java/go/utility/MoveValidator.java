@@ -5,7 +5,7 @@ import go.model.Board;
 import java.util.Arrays;
 
 public class MoveValidator {
-    public static boolean validateMove(int move, int colour, Board board) {
+    public static boolean validateMove(int move, Colour colour, Board board) {
         Board boardCopy = board.copy();
 
         if (!boardCopy.isField(move)) {
@@ -22,7 +22,6 @@ public class MoveValidator {
 
         for (int[] i : boardCopy.getHistory()) {
             if (Arrays.equals(i,boardCopy.getBoardState())) {
-                board.setEntry(move, 0);
                 System.out.println("Ko, boardstate has been seen before");
                 return false;
             }

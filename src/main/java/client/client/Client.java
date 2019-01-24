@@ -2,6 +2,7 @@ package client.client;
 
 import client.gui.go.gui.GoGuiIntegrator;
 import go.model.Board;
+import go.utility.Colour;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +21,7 @@ public class Client extends Thread {
     private BufferedReader inStream;
     private BufferedWriter outStream;
     private int gameId;
-    private int colour;
+    private Colour colour;
     private Board board;
     private boolean turn;
     private GoGuiIntegrator gui;
@@ -46,7 +47,7 @@ public class Client extends Thread {
         String nextLine;
         try {
             while ((nextLine = this.inStream.readLine()) != null) {
-                //System.out.println("Recieved:" + nextLine);
+                System.out.println("received: " + nextLine);
                 handleProtocol(nextLine);
             }
         } catch (IOException e) {
@@ -59,6 +60,7 @@ public class Client extends Thread {
     public void talk(String message) {
         try {
             //System.out.println("send:" + message);
+            System.out.println("sent: " + message);
             this.outStream.write(message + '\n');
             this.outStream.flush();
         } catch (IOException e) {
@@ -81,6 +83,7 @@ public class Client extends Thread {
                 break;
             case "ACKNOWLEDGE_MOVE":
                 updateStatus(command[3]);
+                highlightMove(command[2]);
                 break;
             case "UPDATE_STATUS":
                 updateStatus(command[1]);
@@ -101,7 +104,7 @@ public class Client extends Thread {
     }
 
     public void processConfig(String[] config) {
-        this.colour = Integer.parseInt(config[2]);
+        this.colour = Colour.getByInt(Integer.parseInt(config[2]));
         this.board = new Board(Integer.parseInt(config[3]));
         if (hasGui) {
             gui = new GoGuiIntegrator(Integer.parseInt(config[3]), this);
@@ -110,10 +113,12 @@ public class Client extends Thread {
     }
 
     public void gameFinished(String[] message) {
-        String[] score = message[3].split(":");
-        System.out.println(message[2] + " won the game with id: " + message[1] + ".");
-        System.out.println("Black (1) got " + score[1] + " points.");
-        System.out.println("White (2) got " + score[3] + " points.");
+        String[] score = message[3].split(";");
+        String winString = message[2] + " won the game with id: " + message[1] + "." + "\nBlack (1) got " + score[1] + " points." + "\nWhite (2) got " + score[3] + " points.";
+        if (hasGui) {
+            gui.winScreen(winString);
+        }
+        System.out.println(winString);
     }
 
     public void makeConfig() {
@@ -126,7 +131,7 @@ public class Client extends Thread {
     public void updateStatus(String status) {
         String[] stati = status.split(";");
 
-        if (this.colour == Integer.parseInt(stati[1])) {
+        if (this.colour == Colour.getByInt(Integer.parseInt(stati[1]))) {
             turn = true;
             askMove();
 
@@ -170,30 +175,28 @@ public class Client extends Thread {
         for (int i = 0; i < boardString.length(); i++) {
             switch (boardString.charAt(i)) {
                 case '1':
-                    gui.addStone(i,1);
+                    gui.addStone(i,Colour.BLACK);
                     break;
                 case '2':
-                    gui.addStone(i,2);
+                    gui.addStone(i,Colour.WHITE);
                     break;
             }
         }
     }
 
+    public void highlightMove(String move) {
+        if (!move.split(";")[0].equals("-1")) {
+            gui.highlightStone(Integer.parseInt(move.split(";")[0]));
+        }
+    }
+
     public void shutdown() {
-        print("Closing socket connection...");
+        System.out.println("Closing socket connection...");
         try {
             sock.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    private static void print(String message) {
-        System.out.println(message);
     }
 
     private int readInt(String prompt) {

@@ -13,7 +13,7 @@ public interface Player {
 
     public void requestMove(Board board);
 
-    public void setColour(int colour);
+    public void setColour(Colour colour);
 
     public void updateState();
 
@@ -21,5 +21,5 @@ public interface Player {
 
     public String getUsername();
 
-    public void acknowledgeMove(int move, int colour);
+    public void acknowledgeMove(int move, Colour colour);
 }

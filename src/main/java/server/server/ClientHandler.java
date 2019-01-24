@@ -2,6 +2,7 @@ package server.server;
 
 import go.controller.Game;
 import go.model.Board;
+import go.utility.Colour;
 import go.utility.Player;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class ClientHandler extends Thread implements Player {
     private Game game;
     private String tempMove = null;
     private String username;
-    private int colour;
+    private Colour colour;
 
     public ClientHandler(Server server, Socket clientSocket) {
         this.server = server;
@@ -82,14 +83,14 @@ public class ClientHandler extends Thread implements Player {
             case "SET_CONFIG":
                 try {
                     if (Integer.parseInt(command[2]) == 1 || Integer.parseInt(command[2]) == 2) {
-                        gameHandler.setConfig(Integer.parseInt(command[2]), Integer.parseInt(command[3]));
+                        gameHandler.setConfig(Colour.getByInt(Integer.parseInt(command[2])), Integer.parseInt(command[3]));
                     } else {
                         talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
-                        gameHandler.setConfig(1,7);
+                        gameHandler.setConfig(Colour.BLACK,7);
                     }
                 } catch (NumberFormatException e) {
                     talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
-                    gameHandler.setConfig(1,7);
+                    gameHandler.setConfig(Colour.BLACK,7);
                 }
                 break;
             case "MOVE":
@@ -125,7 +126,7 @@ public class ClientHandler extends Thread implements Player {
         talk(ResponseBuilder.requestConfig());
     }
 
-    public void acknowledgeConfig(int colour, int dimension, String gameState) {
+    public void acknowledgeConfig(Colour colour, int dimension, String gameState) {
         talk(ResponseBuilder.acknowledgeConfig(username, colour, dimension, gameState));
     }
 
@@ -145,7 +146,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     @Override
-    public void setColour(int colour) {
+    public void setColour(Colour colour) {
         this.colour = colour;
     }
 
@@ -156,7 +157,7 @@ public class ClientHandler extends Thread implements Player {
 
     @Override
     public void finishGame(String winner, Map<Integer, Integer> score, String reason) {
-        talk(ResponseBuilder.gameFinished(gameId,winner,"1:"+score.get(1)+":2:"+score.get(2),reason));
+        talk(ResponseBuilder.gameFinished(gameId,winner,"1;"+score.get(1)+";2;"+score.get(2),reason));
     }
 
     @Override
@@ -165,11 +166,11 @@ public class ClientHandler extends Thread implements Player {
     }
 
     @Override
-    public void acknowledgeMove(int move, int colour) {
+    public void acknowledgeMove(int move, Colour colour) {
         talk(ResponseBuilder.acknowledgeMove(gameId, move, colour, gameHandler.gameState()));
     }
 
-    public int getColour() {
+    public Colour getColour() {
         return this.colour;
     }
 

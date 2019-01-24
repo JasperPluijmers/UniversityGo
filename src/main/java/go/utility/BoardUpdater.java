@@ -17,7 +17,7 @@ public class BoardUpdater {
                 checkedFields.addAll(currentGroup.getGroupMembers());
                 if (currentGroup.freedoms() == 0 && !currentGroup.getGroupMembers().contains(move)) {
                     for (int groupMember : currentGroup.getGroupMembers()) {
-                        board.setEntry(groupMember, 0);
+                        board.setEntry(groupMember, Colour.EMPTY);
                     }
                 }
             }
@@ -25,7 +25,7 @@ public class BoardUpdater {
         Group currentGroup = new Group(board.getEntry(move));
         if (freedoms(move, currentGroup, board).freedoms() == 0) {
             for (int groupMember : currentGroup.getGroupMembers()) {
-                board.setEntry(groupMember, 0);
+                board.setEntry(groupMember, Colour.EMPTY);
             }
         }
     }

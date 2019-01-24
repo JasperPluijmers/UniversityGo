@@ -54,7 +54,7 @@ public class ClientHandler extends Thread implements Player {
                 }
             }
         } catch (IOException e) {
-            //stop game, make quit message
+            disconnect();
         }
 
     }
@@ -65,9 +65,13 @@ public class ClientHandler extends Thread implements Player {
             this.outStream.flush();
             System.out.println(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            disconnect();
         }
 
+    }
+
+    private void disconnect() {
+        gameHandler.quit(this);
     }
 
     public void handleWrongMove() {
@@ -142,6 +146,11 @@ public class ClientHandler extends Thread implements Player {
     @Override
     public void setColour(Colour colour) {
         this.colour = colour;
+    }
+
+    public void finishGame() {
+        Map<Integer, Integer> finalScore = game.score();
+        finishGame(username,finalScore,"Other player quit the game");
     }
 
     @Override

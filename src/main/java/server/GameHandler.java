@@ -83,6 +83,12 @@ public class GameHandler extends Thread {
 
     public void quit(ClientHandler clientHandler) {
 
+        if (clientHandler.equals(leadingPlayer) && status == Status.PLAYING) {
+            secondaryPlayer.finishGame();
+        } else if (status == Status.PLAYING){
+            leadingPlayer.finishGame();
+        }
+        status = Status.FINISHED;
     }
 
     public String gameState() {

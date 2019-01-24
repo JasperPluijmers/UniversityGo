@@ -36,10 +36,10 @@ public class Game {
                 state.currentPlayer().requestMove(state.getBoard());
                 break;
             case FINISHED:
-                Map<Integer, Integer> finalScore = score();
-                int winner = finalScore.get(1) > finalScore.get(2) ? 1 : 2;
+                Map<Colour, Integer> finalScore = score();
+                int winner = finalScore.get(Colour.BLACK) > finalScore.get(Colour.WHITE) ? 1 : 2;
                 for (Player player : state.getPlayers()) {
-                    player.finishGame(state.getPlayers().get(winner - 1).getUsername(),finalScore,"Two passes");
+                    player.finishGame(state.getPlayers().get(winner - 1).getUsername(), finalScore, "Two passes");
                 }
                 break;
         }
@@ -86,27 +86,27 @@ public class Game {
         return false;
     }
 
-    public Map<Integer, Integer> score() {
+    public Map<Colour, Integer> score() {
         Set<Integer> checkedFields = new HashSet<>();
-        HashMap<Integer, Integer> scores = new HashMap<>();
-        scores.put(1, 0);
-        scores.put(2, 0);
+        HashMap<Colour, Integer> scores = new HashMap<>();
+        scores.put(Colour.BLACK, 0);
+        scores.put(Colour.WHITE, 0);
         for (int i = 0; i < dimension * dimension; i++) {
-            if (state.getBoard().getEntry(i) == Colour.BLACK && !checkedFields.contains(i)) {
+            if (state.getBoard().getEntry(i) == Colour.EMPTY && !checkedFields.contains(i)) {
                 Group group = BoardUpdater.freedoms(i, new Group(Colour.EMPTY), state.getBoard());
                 checkedFields.addAll(group.getGroupMembers());
                 if (group.getNeighbours().get(Colour.WHITE).size() == 0) {
-                    scores.put(2, scores.get(2) + group.getGroupMembers().size());
+                    scores.put(Colour.BLACK, scores.get(Colour.BLACK) + group.getGroupMembers().size());
                 }
                 if (group.getNeighbours().get(Colour.BLACK).size() == 0) {
-                    scores.put(1, scores.get(1) + group.getGroupMembers().size());
+                    scores.put(Colour.WHITE, scores.get(Colour.WHITE) + group.getGroupMembers().size());
                 }
             }
             if (state.getBoard().getEntry(i) == Colour.BLACK) {
-                scores.put(1, scores.get(1) + 1);
+                scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 1);
             }
             if (state.getBoard().getEntry(i) == Colour.WHITE) {
-                scores.put(2, scores.get(2) + 1);
+                scores.put(Colour.BLACK, scores.get(Colour.BLACK) + 1);
             }
         }
         return scores;

@@ -4,15 +4,17 @@ import go.utility.Colour;
 
 public class ResponseBuilder {
     public static String acknowledgeHandshake(int gameId, boolean isLeader) {
-        return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" + (isLeader ? 1 : 0);
+        String leader;
+        if (isLeader) {
+            leader = "1";
+        } else {
+            leader = "0";
+        }
+        return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" + leader;
     }
 
     public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState) {
         return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour.getValue() + "+" + dimension + "+" + gameState;
-    }
-
-    public static String updateStatus(String gameState) {
-        return "UPDATE_STATUS+" + gameState;
     }
 
     public static String wrongMove() {

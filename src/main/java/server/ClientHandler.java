@@ -4,6 +4,7 @@ import go.controller.Game;
 import go.model.Board;
 import go.utility.Colour;
 import go.utility.Player;
+import go.utility.Status;
 import server.utilities.ProtocolHandler;
 import server.utilities.ResponseBuilder;
 
@@ -17,7 +18,7 @@ public class ClientHandler extends Thread implements Player {
     private Socket socket;
     private BufferedReader inStream;
     private BufferedWriter outStream;
-    private boolean leader;
+    public boolean leader;
     private int gameId;
     private GameHandler gameHandler;
     private boolean turn;
@@ -107,7 +108,6 @@ public class ClientHandler extends Thread implements Player {
     public void handleHandshake(String username) {
         if (this.username == null) {
             this.username = username;
-            talk(ResponseBuilder.acknowledgeHandshake(gameId,leader));
             this.username = username;
             gameHandler.configPlayer(this);
         }
@@ -149,13 +149,14 @@ public class ClientHandler extends Thread implements Player {
     }
 
     public void finishGame() {
-        Map<Integer, Integer> finalScore = game.score();
+        Map<Colour, Integer> finalScore = game.score();
+        gameHandler.setStatus(Status.FINISHED);
         finishGame(username,finalScore,"Other player quit the game");
     }
 
     @Override
-    public void finishGame(String winner, Map<Integer, Integer> score, String reason) {
-        talk(ResponseBuilder.gameFinished(gameId,winner,"1;"+score.get(1)+";2;"+score.get(2),reason));
+    public void finishGame(String winner, Map<Colour, Integer> score, String reason) {
+        talk(ResponseBuilder.gameFinished(gameId,winner,"1;"+score.get(Colour.BLACK)+";2;"+score.get(Colour.WHITE),reason));
     }
 
     @Override
@@ -183,5 +184,6 @@ public class ClientHandler extends Thread implements Player {
     public void setGameId(int gameId) {
         this.gameId = gameId;
     }
+
 
 }

@@ -57,10 +57,10 @@ public class ProtocolHandler {
     }
 
     private void acknowledgeConfigSanitizer(String[] command) {
-        if (command.length == 5) {
+        /*if (command.length == 5) {*/
             client.processConfig(command);
             client.updateStatus(command[4]);
-        }
+        //}
     }
 
     private void acknowledgeHandshakeSanitizer(String[] command) {

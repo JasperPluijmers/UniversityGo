@@ -4,6 +4,7 @@ package server;
 import go.controller.Game;
 import go.utility.Colour;
 import go.utility.Status;
+import server.utilities.ResponseBuilder;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class GameHandler extends Thread {
             players.put(player,Colour.EMPTY);
             leadingPlayer = player;
             leadingPlayer.setLeader();
+            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(gameId, leadingPlayer.leader));
+
             leadingPlayer.setGameId(gameId);
             leadingPlayer.requestConfig();
 
@@ -44,6 +47,7 @@ public class GameHandler extends Thread {
             secondaryPlayer = player;
             secondaryPlayer.setGameId(gameId);
             this.secondaryPlayer.setGameHandler(this);
+            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(gameId, leadingPlayer.leader));
 
             if (dimension != 0) {
                 setupSecondPlayer();
@@ -93,6 +97,10 @@ public class GameHandler extends Thread {
 
     public String gameState() {
         return status + ";" + game.getState().getCurrentColour() + ";" + game.getState().getBoard().stringRep();
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 }

@@ -1,10 +1,10 @@
-package server.server;
+package server.utilities;
 
 import go.utility.Colour;
 
 public class ResponseBuilder {
     public static String acknowledgeHandshake(int gameId, boolean isLeader) {
-        return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" +isLeader;
+        return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" + (isLeader ? 1 : 0);
     }
 
     public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState) {

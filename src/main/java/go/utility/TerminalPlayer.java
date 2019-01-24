@@ -44,11 +44,6 @@ public class TerminalPlayer implements Player {
     }
 
     @Override
-    public void updateState() {
-
-    }
-
-    @Override
     public void finishGame(String winner, Map<Integer, Integer> score, String reason) {
 
     }

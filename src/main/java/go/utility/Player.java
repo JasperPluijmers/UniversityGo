@@ -15,8 +15,6 @@ public interface Player {
 
     public void setColour(Colour colour);
 
-    public void updateState();
-
     public void finishGame(String winner, Map<Integer, Integer> score, String reason);
 
     public String getUsername();

@@ -1,9 +1,11 @@
-package server.server;
+package server;
 
 import go.controller.Game;
 import go.model.Board;
 import go.utility.Colour;
 import go.utility.Player;
+import server.utilities.ProtocolHandler;
+import server.utilities.ResponseBuilder;
 
 import java.io.*;
 import java.net.Socket;
@@ -23,6 +25,7 @@ public class ClientHandler extends Thread implements Player {
     private String tempMove = null;
     private String username;
     private Colour colour;
+    private ProtocolHandler protocolHandler;
 
     public ClientHandler(Server server, Socket clientSocket) {
         this.server = server;
@@ -34,6 +37,7 @@ public class ClientHandler extends Thread implements Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.protocolHandler = new ProtocolHandler(this);
         this.start();
     }
 
@@ -44,7 +48,7 @@ public class ClientHandler extends Thread implements Player {
             String inbound;
             while ((inbound = inStream.readLine()) != null) {
                 if (isProtocol(inbound)) {
-                    handleProtocol(inbound);
+                    protocolHandler.handleProtocol(inbound);
                 } else {
                     talk(ResponseBuilder.unknownCommand("Command not recognized"));
                 }
@@ -66,68 +70,58 @@ public class ClientHandler extends Thread implements Player {
 
     }
 
-    public boolean isProtocol(String message) {
-        return message.matches(".*\\+.*");
+    public void handleWrongMove() {
+        talk(ResponseBuilder.wrongMove());
     }
 
-    public void handleProtocol(String message) {
-        String[] command = message.split("\\+");
-        switch (command[0]) {
-            case "HANDSHAKE":
-                if (username == null) {
-                    talk(ResponseBuilder.acknowledgeHandshake(gameId, leader));
-                    gameHandler.configPlayer(this);
-                    this.username = command[1];
+    public void handleMove(int move) {
+        if (turn == true) {
+            if (move == -1) {
+                if (game.playMove("PASS", colour)) {
+                    turn = false;
                 }
-                break;
-            case "SET_CONFIG":
-                try {
-                    if (Integer.parseInt(command[2]) == 1 || Integer.parseInt(command[2]) == 2) {
-                        gameHandler.setConfig(Colour.getByInt(Integer.parseInt(command[2])), Integer.parseInt(command[3]));
-                    } else {
-                        talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
-                        gameHandler.setConfig(Colour.BLACK,7);
-                    }
-                } catch (NumberFormatException e) {
-                    talk(ResponseBuilder.unknownCommand("Found invalid numbers, default values assumed (playing black with dim 7)"));
-                    gameHandler.setConfig(Colour.BLACK,7);
+            } else {
+                if (game.playMove("PLAY " + move, colour)) {
+                    turn = false;
                 }
-                break;
-            case "MOVE":
-                    if (turn == true) {
-                        if (command[3].equals("-1")) {
-                            if (game.playMove("PASS", colour)) {
-                                turn = false;
-                            }
-                        } else {
-                            if (game.playMove("PLAY " + command[3], colour)) {
-                                turn = false;
-                            }
-                        }
-                    } else {
-                        talk(ResponseBuilder.wrongMove());
-                    }
-                    break;
-            case "EXIT":
-                gameHandler.quit(this);
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                System.out.println("not in protocol" + message);
-
+            }
         }
+    }
+
+    public void handleQuit() {
+        gameHandler.quit(this);
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void handleSetConfig(int colour, int boardSize) {
+        gameHandler.setConfig(Colour.getByInt(colour),boardSize);
+    }
+
+    public void handleHandshake(String username) {
+        if (this.username == null) {
+            this.username = username;
+            talk(ResponseBuilder.acknowledgeHandshake(gameId,leader));
+            this.username = username;
+            gameHandler.configPlayer(this);
+        }
+    }
+
+    public void handleUnknownCommand(String message) {
+        talk(ResponseBuilder.unknownCommand(message));
+    }
+    public boolean isProtocol(String message) {
+        return message.matches(".*\\+.*");
     }
 
     public void requestConfig() {
         talk(ResponseBuilder.requestConfig());
     }
 
-    public void acknowledgeConfig(Colour colour, int dimension, String gameState) {
-        talk(ResponseBuilder.acknowledgeConfig(username, colour, dimension, gameState));
+    public void acknowledgeConfig(int dimension, String gameState) {
+        talk(ResponseBuilder.acknowledgeConfig(username, this.colour, dimension, gameState));
     }
 
     @Override
@@ -148,11 +142,6 @@ public class ClientHandler extends Thread implements Player {
     @Override
     public void setColour(Colour colour) {
         this.colour = colour;
-    }
-
-    @Override
-    public void updateState() {
-        talk(ResponseBuilder.updateStatus(gameHandler.gameState()));
     }
 
     @Override

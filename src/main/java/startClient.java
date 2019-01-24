@@ -1,6 +1,4 @@
-package client;
-
-import client.client.Client;
+import client.Client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -8,7 +6,7 @@ import java.net.UnknownHostException;
 
 //NVC3823, 8000
 
-public class main {
+public class startClient {
     public static void main(String[] args) {
 
         InetAddress host = null;

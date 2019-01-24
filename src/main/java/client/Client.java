@@ -1,5 +1,7 @@
-package client.client;
+package client;
 
+import client.utilities.ProtocolHandler;
+import client.utilities.ResponseBuilder;
 import client.gui.go.gui.GoGuiIntegrator;
 import go.model.Board;
 import go.utility.Colour;
@@ -26,6 +28,7 @@ public class Client extends Thread {
     private boolean turn;
     private GoGuiIntegrator gui;
     private boolean hasGui;
+    private ProtocolHandler protocolHandler;
 
     public Client(String name, InetAddress host, int port, boolean hasGui)
             throws IOException {
@@ -39,7 +42,7 @@ public class Client extends Thread {
         this.talk(ResponseBuilder.handshake(name));
 
         this.hasGui = hasGui;
-
+        this.protocolHandler = new ProtocolHandler(this);
     }
 
 
@@ -48,7 +51,7 @@ public class Client extends Thread {
         try {
             while ((nextLine = this.inStream.readLine()) != null) {
                 System.out.println("received: " + nextLine);
-                handleProtocol(nextLine);
+                protocolHandler.handleProtocol(nextLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,37 +73,9 @@ public class Client extends Thread {
 
     }
 
-    public void handleProtocol(String message) {
-        String[] command = message.split("\\+");
-        switch (command[0]) {
-            case "ACKNOWLEDGE_HANDSHAKE":
-                this.gameId = Integer.parseInt(command[1]);
-                System.out.println("GameId:" + command[1]);
-                break;
-            case "ACKNOWLEDGE_CONFIG":
-                processConfig(command);
-                updateStatus(command[4]);
-                break;
-            case "ACKNOWLEDGE_MOVE":
-                updateStatus(command[3]);
-                highlightMove(command[2]);
-                break;
-            case "UPDATE_STATUS":
-                updateStatus(command[1]);
-                break;
-            case "INVALID_MOVE":
-                System.out.println(command[1]);
-                askMove();
-                break;
-            case "REQUEST_CONFIG":
-                makeConfig();
-                break;
-            case "GAME_FINISHED":
-                gameFinished(command);
-                break;
-            default:
-                System.out.println("Not in protocol" + message);
-        }
+    public void handleHandshake(int gameId) {
+        this.gameId = gameId;
+        System.out.println("GameId:" + this.gameId);
     }
 
     public void processConfig(String[] config) {

@@ -1,8 +1,7 @@
 package client.gui.go.gui;
 
-import client.client.Client;
+import client.Client;
 import client.gui.go.gui.utilities.ClickListener;
-import client.gui.go.gui.utilities.WinScreen;
 import go.utility.Colour;
 import javafx.application.Application;
 import javafx.event.EventHandler;

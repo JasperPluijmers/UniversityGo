@@ -1,11 +1,8 @@
 package client.gui.go.gui;
 
-import client.client.Client;
-import client.gui.go.gui.utilities.WinScreen;
+import client.Client;
 import go.utility.Colour;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 
 public class GoGuiIntegrator implements GoGui {
 

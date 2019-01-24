@@ -1,8 +1,6 @@
-package server;
+import server.Server;
 
-import server.server.Server;
-
-public class App {
+public class startServer {
 
     public static void main(String[] args) {
         new Server().start();

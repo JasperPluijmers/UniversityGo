@@ -1,4 +1,4 @@
-package client.client;
+package client.utilities;
 
 public class ResponseBuilder {
 

@@ -27,9 +27,6 @@ public class Game {
 
     public void play() {
         state.setStatus(Status.PLAYING);
-        for (Player player : state.getPlayers()) {
-            player.updateState();
-        }
         nextTurn();
     }
 
@@ -98,10 +95,10 @@ public class Game {
             if (state.getBoard().getEntry(i) == Colour.BLACK && !checkedFields.contains(i)) {
                 Group group = BoardUpdater.freedoms(i, new Group(Colour.EMPTY), state.getBoard());
                 checkedFields.addAll(group.getGroupMembers());
-                if (group.getNeighbours().get(1).size() == 0) {
+                if (group.getNeighbours().get(Colour.WHITE).size() == 0) {
                     scores.put(2, scores.get(2) + group.getGroupMembers().size());
                 }
-                if (group.getNeighbours().get(2).size() == 0) {
+                if (group.getNeighbours().get(Colour.BLACK).size() == 0) {
                     scores.put(1, scores.get(1) + group.getGroupMembers().size());
                 }
             }

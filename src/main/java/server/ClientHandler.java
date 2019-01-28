@@ -161,16 +161,16 @@ public class ClientHandler extends Thread implements Player {
 
     //game finish due to quit or disconnect
     public void finishGame() {
-        Map<Colour, Integer> finalScore = game.score();
+        Map<Colour, Integer> finalScore = gameHandler.score();
         gameHandler.setStatus(Status.FINISHED);
-        talk(ResponseBuilder.gameFinished(gameId, username,finalScore.get(Colour.BLACK)+ ";2;" + finalScore.get(Colour.WHITE),"Other player quit the game"));
+        talk(ResponseBuilder.gameFinished(gameId, username,finalScore.get(Colour.BLACK)+ ";" + finalScore.get(Colour.WHITE),"Other player quit the game"));
     }
 
 
     //normal gamefinish
     @Override
     public void finishGame(String winner, Map<Colour, Integer> score, String reason) {
-        talk(ResponseBuilder.gameFinished(gameId, winner, "1;" + score.get(Colour.BLACK) + ";2;" + score.get(Colour.WHITE), reason));
+        talk(ResponseBuilder.gameFinished(gameId, winner, score.get(Colour.BLACK) + ";" + score.get(Colour.WHITE), reason));
         talk(ResponseBuilder.requestRematch());
     }
 

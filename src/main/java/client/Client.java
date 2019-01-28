@@ -30,14 +30,17 @@ public class Client extends Thread {
     private boolean hasGui;
     private ProtocolHandler protocolHandler;
 
-    public Client(String name, InetAddress host, int port, boolean hasGui)
-            throws IOException {
+    public Client(String name, InetAddress host, int port, boolean hasGui) {
 
         this.userName = name;
 
-        sock = new Socket(host, port);
-        this.inStream = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
-        this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
+        try {
+            sock = new Socket(host, port);
+            this.inStream = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
+            this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         this.talk(ResponseBuilder.handshake(name));
 
@@ -50,7 +53,7 @@ public class Client extends Thread {
         String nextLine;
         try {
             while ((nextLine = this.inStream.readLine()) != null) {
-                System.out.println("received: " + nextLine);
+                //System.out.println("received: " + nextLine);
                 protocolHandler.handleProtocol(nextLine);
             }
         } catch (IOException e) {
@@ -60,7 +63,7 @@ public class Client extends Thread {
 
     public void talk(String message) {
         try {
-            System.out.println("sent: " + message);
+            //System.out.println("sent: " + message);
             this.outStream.write(message + '\n');
             this.outStream.flush();
         } catch (IOException e) {
@@ -93,7 +96,7 @@ public class Client extends Thread {
 
     public void gameFinished(String[] message) {
         String[] score = message[3].split(";");
-        String winString = message[2] + " won the game with id: " + message[1] + "." + "\nBlack (1) got " + score[1] + " points." + "\nWhite (2) got " + score[3] + " points.";
+        String winString = message[2] + " won the game with id: " + message[1] + "." + "\nBlack (1) got " + score[0] + " points." + "\nWhite (2) got " + score[1] + " points.";
         if (hasGui) {
             gui.winScreen(winString);
         }
@@ -110,6 +113,8 @@ public class Client extends Thread {
     public void updateStatus(String status) {
         String[] stati = status.split(";");
 
+        this.board.fromString(stati[2]);
+
         if (this.colour == Colour.getByInt(Integer.parseInt(stati[1]))) {
             turn = true;
             askMove();
@@ -119,7 +124,6 @@ public class Client extends Thread {
             gui.setTurn(turn);
         }
 
-        this.board.fromString(stati[2]);
 
         if (hasGui) {
             updateGui(stati[2]);
@@ -236,5 +240,17 @@ public class Client extends Thread {
         if (value == 0) {
             shutdown();
         }
+    }
+
+    protected Board getBoard() {
+        return this.board;
+    }
+
+    protected Colour getColour() {
+        return this.colour;
+    }
+
+    protected int getGameId() {
+        return this.gameId;
     }
 }

@@ -9,12 +9,12 @@ public class MoveValidator {
         Board boardCopy = board.copy();
 
         if (!boardCopy.isField(move)) {
-            System.out.println(String.format("%d is not within the bounds of the board", move));
+            //System.out.println(String.format("%d is not within the bounds of the board", move));
             return false;
         }
 
         if (!boardCopy.isempty(move)) {
-            System.out.println(String.format("Field %d is already occupied by %d", move, board.getEntry(move)));
+            //System.out.println(String.format("Field %d is already occupied by %s", move, board.getEntry(move)));
             return false;
         }
         boardCopy.setEntry(move, colour);
@@ -22,7 +22,7 @@ public class MoveValidator {
 
         for (int[] i : boardCopy.getHistory()) {
             if (Arrays.equals(i,boardCopy.getBoardState())) {
-                System.out.println("Ko, boardstate has been seen before");
+                //System.out.println("Ko, boardstate has been seen before");
                 return false;
             }
         }

@@ -3,6 +3,7 @@ package server;
 
 import go.controller.Game;
 import go.utility.Colour;
+import go.utility.Score;
 import go.utility.Status;
 import server.utilities.ResponseBuilder;
 
@@ -137,6 +138,10 @@ public class GameHandler extends Thread {
         } else {
             return leadingPlayer;
         }
+    }
+
+    public Map<Colour, Integer> score() {
+        return Score.score(game.getState().getBoard());
     }
 
 }

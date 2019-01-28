@@ -12,4 +12,12 @@ public class ResponseBuilder {
     public static String move(int gameId, String userName, String index) {
         return "MOVE" + "+" + gameId + "+" + userName + "+" + index;
     }
+
+    public static String exit(int gameId, String username) {
+        return "EXIT+" + gameId + "+" + username;
+    }
+
+    public static String setRematch(int value) {
+        return "SET_REMATCH+" + value;
+    }
 }

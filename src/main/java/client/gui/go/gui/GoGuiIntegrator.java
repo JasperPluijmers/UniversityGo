@@ -21,6 +21,7 @@ public class GoGuiIntegrator implements GoGui {
 		this.client = client;
 
 		wrappee.setPassButtonListener(() -> client.clickMove(-1));
+		wrappee.setRematchButtonListener(() -> client.handleRematch(0),() -> client.handleRematch(1));
 	}
 
 	@Override
@@ -166,6 +167,18 @@ public class GoGuiIntegrator implements GoGui {
 		Platform.runLater(() -> {
 
 			wrappee.winScreen(winString);
+		});
+	}
+
+	public synchronized void requestRematch() {
+		Platform.runLater(() -> {
+			wrappee.requestRematch();
+		});
+	}
+
+	public synchronized void newMatch() {
+		Platform.runLater(() -> {
+			wrappee.newMatch();
 		});
 	}
 	}

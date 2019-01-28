@@ -71,6 +71,9 @@ public class ClientHandler extends Thread implements Player {
 
     }
 
+    public void handleSetRematch(int value) {
+        gameHandler.rematch(value, this);
+    }
     private void disconnect() {
         gameHandler.quit(this);
     }
@@ -93,6 +96,13 @@ public class ClientHandler extends Thread implements Player {
         }
     }
 
+    public void closeSocket() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void handleQuit() {
         gameHandler.quit(this);
         try {
@@ -148,15 +158,20 @@ public class ClientHandler extends Thread implements Player {
         this.colour = colour;
     }
 
+
+    //game finish due to quit or disconnect
     public void finishGame() {
         Map<Colour, Integer> finalScore = game.score();
         gameHandler.setStatus(Status.FINISHED);
-        finishGame(username,finalScore,"Other player quit the game");
+        talk(ResponseBuilder.gameFinished(gameId, username,finalScore.get(Colour.BLACK)+ ";2;" + finalScore.get(Colour.WHITE),"Other player quit the game"));
     }
 
+
+    //normal gamefinish
     @Override
     public void finishGame(String winner, Map<Colour, Integer> score, String reason) {
-        talk(ResponseBuilder.gameFinished(gameId,winner,"1;"+score.get(Colour.BLACK)+";2;"+score.get(Colour.WHITE),reason));
+        talk(ResponseBuilder.gameFinished(gameId, winner, "1;" + score.get(Colour.BLACK) + ";2;" + score.get(Colour.WHITE), reason));
+        talk(ResponseBuilder.requestRematch());
     }
 
     @Override
@@ -186,4 +201,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
 
+    public void acknowledgeRematch(int value) {
+        talk(ResponseBuilder.acknolwedgeRematch(value));
+    }
 }

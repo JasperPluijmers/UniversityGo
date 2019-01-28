@@ -54,15 +54,12 @@ public class Client extends Thread {
                 protocolHandler.handleProtocol(nextLine);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             shutdown();
-            System.exit(0);
         }
     }
 
     public void talk(String message) {
         try {
-            //System.out.println("send:" + message);
             System.out.println("sent: " + message);
             this.outStream.write(message + '\n');
             this.outStream.flush();
@@ -73,6 +70,12 @@ public class Client extends Thread {
 
     }
 
+    public void requestRematch() {
+        if (hasGui) {
+            gui.requestRematch();
+        }
+    }
+
     public void handleHandshake(int gameId) {
         this.gameId = gameId;
         System.out.println("GameId:" + this.gameId);
@@ -81,6 +84,7 @@ public class Client extends Thread {
     public void processConfig(String[] config) {
         this.colour = Colour.getByInt(Integer.parseInt(config[2]));
         this.board = new Board(Integer.parseInt(config[3]));
+        this.userName = config[1];
         if (hasGui) {
             gui = new GoGuiIntegrator(Integer.parseInt(config[3]), this);
             gui.startGUI();
@@ -172,6 +176,7 @@ public class Client extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.exit(1);
     }
 
     private int readInt(String prompt) {
@@ -213,4 +218,23 @@ public class Client extends Thread {
         return value;
     }
 
+    public void acknowledgeRematchHandler(int value) {
+        if (value == 0) {
+            talk(ResponseBuilder.exit(gameId,userName));
+            shutdown();
+        }
+        if (value == 1) {
+            board = new Board(board.dimension);
+            if (hasGui) {
+                gui.newMatch();
+            }
+        }
+    }
+
+    public void handleRematch(int value) {
+        talk(ResponseBuilder.setRematch(value));
+        if (value == 0) {
+            shutdown();
+        }
+    }
 }

@@ -36,4 +36,12 @@ public class ResponseBuilder {
     public static String acknowledgeMove(int gameId, int move, Colour colour, String state) {
         return "ACKNOWLEDGE_MOVE+" + gameId + "+" + move + ";" + colour.getValue() + "+" + state;
     }
+
+    public static String requestRematch() {
+        return "REQUEST_REMATCH";
+    }
+
+    public static String acknolwedgeRematch(int value) {
+        return "ACKNOWLEDGE_REMATCH+" + value;
+    }
 }

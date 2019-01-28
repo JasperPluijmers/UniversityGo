@@ -34,12 +34,24 @@ public class ProtocolHandler {
             case EXIT:
                 clientHandler.handleQuit();
                 break;
+            case SET_REMATCH:
+                sanitizeSetRematch(command);
+                break;
             default:
                 clientHandler.handleUnknownCommand("Message not in protocol: " + message);
 
         }
     }
-
+    private void sanitizeSetRematch(String[] command) {
+        if (command.length == 2) {
+            if (checkInt(command[1])) {
+                int value = Integer.parseInt(command[1]);
+                if (value == 0 || value == 1) {
+                    clientHandler.handleSetRematch(value);
+                }
+            }
+        }
+    }
     private void sanitizeMove(String[] command) {
         if (command.length == 4) {
             if (checkInt(command[3]) && Integer.parseInt(command[3]) > -2) {

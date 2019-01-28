@@ -29,14 +29,32 @@ public class ProtocolHandler {
                 requestConfigSanitizer(command);
                 break;
             case GAME_FINISHED:
-                gameFinishedSanitize(command);
+                gameFinishedSanitizer(command);
+                break;
+            case REQUEST_REMATCH:
+                requestRematchSanitizer(command);
+                break;
+            case ACKNOWLEDGE_REMATCH:
+                acknowledgeRematchSanitizer(command);
                 break;
             default:
                 System.out.println("Not in protocol" + message);
         }
     }
 
-    private void gameFinishedSanitize(String[] command) {
+    private void acknowledgeRematchSanitizer(String[] command) {
+        if (command.length == 2) {
+            if (checkInt(command[1])) {
+                client.acknowledgeRematchHandler(Integer.parseInt(command[1]));
+            }
+        }
+    }
+
+    private void requestRematchSanitizer(String[] command) {
+        client.requestRematch();
+    }
+
+    private void gameFinishedSanitizer(String[] command) {
         client.gameFinished(command);
     }
 

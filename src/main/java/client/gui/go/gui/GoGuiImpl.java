@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,7 +41,13 @@ public class GoGuiImpl extends Application {
 	private boolean turn;
 	private Button passButton;
 
+
+	private Stage finishWindow;
+	private Stage rematchWindow;
+
 	private ClickListener passButtonListener;
+	private ClickListener noListener;
+	private ClickListener yesListener;
 
 	private static final CountDownLatch waitForConfigurationLatch = new CountDownLatch(1);
 	private static final CountDownLatch initializationLatch = new CountDownLatch(1);
@@ -251,7 +258,7 @@ public class GoGuiImpl extends Application {
 			for (int x = 0; x < currentBoardSize; x++) {
 				for (int y = 0; y < currentBoardSize; y++) {
 					removeStone(x, y);
-					addPlaceHolderStone(x,y,client);
+					addPlaceHolderStone(x,y, client);
 				}
 			}
 		} catch (InvalidCoordinateException e) {
@@ -274,14 +281,7 @@ public class GoGuiImpl extends Application {
 	}
 
 	protected static void startGUI() {
-		new Thread() {
-
-			@Override
-			public void run() {
-				Application.launch(GoGuiImpl.class);
-			}
-
-		}.start();
+		new Thread(() -> Application.launch(GoGuiImpl.class)).start();
 	}
 
 	protected void waitForInitializationLatch() {
@@ -302,14 +302,53 @@ public class GoGuiImpl extends Application {
 
 		Scene secondScene = new Scene(secondaryLayout, 230, 100);
 		// New window (Stage)
-		Stage newWindow = new Stage();
-		newWindow.setTitle("Game finished");
-		newWindow.setScene(secondScene);
+		finishWindow = new Stage();
+		finishWindow.setTitle("Game finished");
+		finishWindow.setScene(secondScene);
 
 				// Set position of second window, related to primary window.
-		newWindow.setX(primaryStage.getX() + 200);
-		newWindow.setY(primaryStage.getY() + 100);
+		finishWindow.setX(primaryStage.getX() + 200);
+		finishWindow.setY(primaryStage.getY() + 100);
 
-		newWindow.show();
+		finishWindow.show();
+	}
+
+	public void requestRematch() {
+		FlowPane rematchPane = new FlowPane();
+
+		Button noButton = new Button("No");
+		Button yesButton = new Button("Yes");
+
+		Scene rematchScene = new Scene(rematchPane, 230, 100);
+		// New window (Stage)
+		rematchWindow = new Stage();
+
+		noButton.setOnMouseClicked(event -> noListener.onclick());
+		yesButton.setOnMouseClicked(event -> yesListener.onclick());
+
+		rematchPane.getChildren().add(noButton);
+
+		rematchPane.getChildren().add(yesButton);
+
+
+
+		rematchWindow.setTitle("Rematch?");
+		rematchWindow.setScene(rematchScene);
+
+		// Set position of second window, related to primary window.
+		rematchWindow.setX(primaryStage.getX() + 200);
+		rematchWindow.setY(primaryStage.getY() + 100);
+
+		rematchWindow.show();
+	}
+
+	public void setRematchButtonListener(ClickListener noListener, ClickListener yesListener) {
+		this.noListener = noListener;
+		this.yesListener = yesListener;
+	}
+
+	public void newMatch() {
+		rematchWindow.close();
+		finishWindow.close();
 	}
 }

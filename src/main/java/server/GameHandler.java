@@ -19,6 +19,8 @@ public class GameHandler extends Thread {
     private Game game;
     private int dimension;
 
+    private int rematchCount;
+
     private Map<ClientHandler, Colour> players;
 
 
@@ -68,6 +70,11 @@ public class GameHandler extends Thread {
         secondaryPlayer.setColour(players.get(leadingPlayer) == Colour.BLACK ? Colour.WHITE : Colour.BLACK);
         players.put(secondaryPlayer, secondaryPlayer.getColour());
         status = Status.PLAYING;
+        startNewGame();
+        game.play();
+    }
+
+    public void startNewGame() {
         if (players.get(leadingPlayer) == Colour.BLACK) {
             game = new Game(dimension, Arrays.asList(leadingPlayer, secondaryPlayer));
         } else {
@@ -77,7 +84,6 @@ public class GameHandler extends Thread {
         for (ClientHandler player : players.keySet()) {
             player.acknowledgeConfig(this.dimension, gameState());
         }
-        this.start();
     }
 
     public void run() {
@@ -89,7 +95,7 @@ public class GameHandler extends Thread {
 
         if (clientHandler.equals(leadingPlayer) && status == Status.PLAYING) {
             secondaryPlayer.finishGame();
-        } else if (status == Status.PLAYING){
+        } else if (status == Status.PLAYING) {
             leadingPlayer.finishGame();
         }
         status = Status.FINISHED;
@@ -101,6 +107,36 @@ public class GameHandler extends Thread {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void rematch(int value, ClientHandler player) {
+        System.out.println("value: " + value);
+        switch (value) {
+            case 0:
+                player.closeSocket();
+                otherPlayer(player).acknowledgeRematch(value);
+                otherPlayer(player).closeSocket();
+            case 1:
+                if (rematchCount != 1) {
+                    rematchCount = 1;
+                } else {
+                    rematchCount = 0;
+                    startNewGame();
+                    for (ClientHandler players : players.keySet()) {
+                        players.acknowledgeRematch(value);
+                        players.acknowledgeConfig(this.dimension, gameState());
+                    }
+                    game.play();
+                }
+        }
+    }
+
+    private ClientHandler otherPlayer(ClientHandler player) {
+        if (player.equals(leadingPlayer)) {
+            return secondaryPlayer;
+        } else {
+            return leadingPlayer;
+        }
     }
 
 }

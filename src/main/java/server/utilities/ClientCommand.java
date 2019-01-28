@@ -4,6 +4,7 @@ public enum ClientCommand {
     HANDSHAKE ("HANDSHAKE"),
     SET_CONFIG ("SET_CONFIG"),
     MOVE ("MOVE"),
+    SET_REMATCH ("SET_REMATCH"),
     EXIT ("EXIT");
 
     private String name;

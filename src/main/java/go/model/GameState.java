@@ -21,9 +21,11 @@ public class GameState {
         this.status = Status.WAITING;
         this.passed = false;
     }
+
     public Board getBoard() {
-       return this.board;
+        return this.board;
     }
+
     public boolean getPassed() {
         return this.passed;
     }

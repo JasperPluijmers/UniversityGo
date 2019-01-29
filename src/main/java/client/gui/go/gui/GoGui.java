@@ -7,6 +7,7 @@ public interface GoGui {
     /**
      * Sets the board width and height to the given value. Adjusts the window size accordingly.
      * Re-initialises the board, note that the existing stone configuration will be lost.
+     *
      * @param size the desired width and height of the board.
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
      */
@@ -15,8 +16,9 @@ public interface GoGui {
     /**
      * Adds a new stone to the board of the given type and at the given position.
      * Removes any existing stone/area indicator at the given position.
-     * @param x the x coordinate of the new stone, ranges from 0 to boardSize - 1.
-     * @param y the y coordinate of the new stone, ranges from 0 to boardSize - 1.
+     *
+     * @param x      the x coordinate of the new stone, ranges from 0 to boardSize - 1.
+     * @param y      the y coordinate of the new stone, ranges from 0 to boardSize - 1.
      * @param colour colour of the stone
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
      */
@@ -25,6 +27,7 @@ public interface GoGui {
     /**
      * Removes any existing stone at the given position.
      * Does nothing if the position currently has no stone/area indicator.
+     *
      * @param x the x coordinate of the stone/area indicator to remove, ranges from 0 to boardSize - 1.
      * @param y the y coordinate of the stone/area indicator to remove, ranges from 0 to boardSize - 1.
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
@@ -34,8 +37,9 @@ public interface GoGui {
     /**
      * Adds a new area indicator to the board of the given type and at the given position.
      * Removes any existing stone/area indicator at the given position.
-     * @param x the x coordinate of the new stone, ranges from 0 to boardSize - 1.
-     * @param y the y coordinate of the new stone, ranges from 0 to boardSize - 1.
+     *
+     * @param x      the x coordinate of the new stone, ranges from 0 to boardSize - 1.
+     * @param y      the y coordinate of the new stone, ranges from 0 to boardSize - 1.
      * @param colour the colour of the area indicator
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.
      */
@@ -43,6 +47,7 @@ public interface GoGui {
 
     /**
      * Adds a hint indicator to the board of the given type and at the given position.
+     *
      * @param x the x coordinate of the hint, ranges from 0 to boardSize - 1.
      * @param y the y coordinate of the hint, ranges from 0 to boardSize - 1.
      * @throws InvalidCoordinateException when x or y coordinate fall outside of the board.

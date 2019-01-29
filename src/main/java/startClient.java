@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 
 //NVC3823, 8000 <gerjan
 //NVC3827, 5698 <sarah
+//NVC3449, 8000 <Luuk
 //localhost, 3001
 
 public class startClient {
@@ -15,15 +16,13 @@ public class startClient {
         InetAddress host = null;
 
         try {
-            host = InetAddress.getByName("localhost");
+            host = InetAddress.getByName("NVC3827");
         } catch (UnknownHostException e) {
             System.out.println("ERROR: no valid hostname!");
             System.exit(0);
         }
 
-        Client client = new Client("Jasper", host, 3001, true);
+        Client client = new Client("Jasper", host, 2020, true);
         client.start();
-
-
     }
 }

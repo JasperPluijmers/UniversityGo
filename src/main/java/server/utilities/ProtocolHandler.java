@@ -42,6 +42,7 @@ public class ProtocolHandler {
 
         }
     }
+
     private void sanitizeSetRematch(String[] command) {
         if (command.length == 2) {
             if (checkInt(command[1])) {
@@ -52,6 +53,7 @@ public class ProtocolHandler {
             }
         }
     }
+
     private void sanitizeMove(String[] command) {
         if (command.length == 4) {
             if (checkInt(command[3]) && Integer.parseInt(command[3]) > -2) {

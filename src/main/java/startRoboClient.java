@@ -21,7 +21,7 @@ public class startRoboClient {
             System.exit(0);
         }
 
-        RoboClient client = new RoboClient("Jasper", host, 3001, true);
+        RoboClient client = new RoboClient("Jasper", host, 2001, true);
         client.start();
 
 

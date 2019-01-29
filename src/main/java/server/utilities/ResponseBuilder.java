@@ -10,11 +10,11 @@ public class ResponseBuilder {
         } else {
             leader = "0";
         }
-        return "ACKNOWLEDGE_HANDSHAKE+"+gameId+ "+" + leader;
+        return "ACKNOWLEDGE_HANDSHAKE+" + gameId + "+" + leader;
     }
 
-    public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState) {
-        return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour.getValue() + "+" + dimension + "+" + gameState;
+    public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState, String opponent) {
+        return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour.getValue() + "+" + dimension + "+" + gameState + "+" + opponent;
     }
 
     public static String wrongMove() {

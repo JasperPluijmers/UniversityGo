@@ -45,7 +45,7 @@ public class ProtocolHandler {
     private void acknowledgeRematchSanitizer(String[] command) {
         if (command.length == 2) {
             if (checkInt(command[1])) {
-                client.acknowledgeRematchHandler(Integer.parseInt(command[1]));
+                client.handleAcknowledgeRematch(Integer.parseInt(command[1]));
             }
         }
     }
@@ -75,10 +75,10 @@ public class ProtocolHandler {
     }
 
     private void acknowledgeConfigSanitizer(String[] command) {
-        /*if (command.length == 5) {*/
-            client.processConfig(command);
+        if (command.length == 6) {
+            client.handleAcknowledgeConfig(command);
             client.updateStatus(command[4]);
-        //}
+        }
     }
 
     private void acknowledgeHandshakeSanitizer(String[] command) {

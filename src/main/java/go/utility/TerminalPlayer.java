@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static java.util.jar.Pack200.Packer.PASS;
+
 //does not work right now
 public class TerminalPlayer implements Player {
 
@@ -44,7 +45,7 @@ public class TerminalPlayer implements Player {
     }
 
     @Override
-    public void finishGame(String winner, Map<Colour, Integer> score, String reason) {
+    public void finishGame(String winner, Map<Colour, Double> score, String reason) {
 
     }
 

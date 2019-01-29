@@ -20,8 +20,6 @@ public class GameHandler extends Thread {
     private Game game;
     private int dimension;
 
-    private int rematchCount;
-
     private Map<ClientHandler, Colour> players;
 
 
@@ -37,7 +35,7 @@ public class GameHandler extends Thread {
 
     public void configPlayer(ClientHandler player) {
         if (players.size() == 0) {
-            players.put(player,Colour.EMPTY);
+            players.put(player, Colour.EMPTY);
             leadingPlayer = player;
             leadingPlayer.setLeader();
             leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(gameId, leadingPlayer.leader));
@@ -46,7 +44,7 @@ public class GameHandler extends Thread {
             leadingPlayer.requestConfig();
 
         } else if (players.size() == 1) {
-            players.put(player,Colour.EMPTY);
+            players.put(player, Colour.EMPTY);
             secondaryPlayer = player;
             secondaryPlayer.setGameId(gameId);
             this.secondaryPlayer.setGameHandler(this);
@@ -59,8 +57,8 @@ public class GameHandler extends Thread {
     }
 
     public void setConfig(Colour colour, int dimension) {
-        players.put(leadingPlayer,colour);
-        System.out.println("col:"+players.get(leadingPlayer));
+        players.put(leadingPlayer, colour);
+        System.out.println("col:" + players.get(leadingPlayer));
         this.dimension = dimension;
         if (players.size() == 2) {
             setupSecondPlayer();
@@ -83,7 +81,7 @@ public class GameHandler extends Thread {
         }
 
         for (ClientHandler player : players.keySet()) {
-            player.acknowledgeConfig(this.dimension, gameState());
+            player.acknowledgeConfig(this.dimension, gameState(), otherPlayer(player).getUsername());
         }
     }
 
@@ -118,15 +116,14 @@ public class GameHandler extends Thread {
                 otherPlayer(player).acknowledgeRematch(value);
                 otherPlayer(player).closeSocket();
             case 1:
-                if (rematchCount != 1) {
-                    rematchCount = 1;
+                if (!otherPlayer(player).getWantsRematch()) {
+                    player.setWantsRematch(true);
                 } else {
-                    rematchCount = 0;
-                    startNewGame();
                     for (ClientHandler players : players.keySet()) {
                         players.acknowledgeRematch(value);
-                        players.acknowledgeConfig(this.dimension, gameState());
+                        players.setWantsRematch(false);
                     }
+                    startNewGame();
                     game.play();
                 }
         }
@@ -140,7 +137,7 @@ public class GameHandler extends Thread {
         }
     }
 
-    public Map<Colour, Integer> score() {
+    public Map<Colour, Double> score() {
         return Score.score(game.getState().getBoard());
     }
 

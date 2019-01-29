@@ -18,9 +18,9 @@ public class Group {
         this.neighbours = new HashMap<>();
         this.groupMembers = new HashSet<>();
 
-        this.neighbours.put(Colour.EMPTY,new HashSet<>());
-        this.neighbours.put(Colour.BLACK,new HashSet<>());
-        this.neighbours.put(Colour.WHITE,new HashSet<>());
+        this.neighbours.put(Colour.EMPTY, new HashSet<>());
+        this.neighbours.put(Colour.BLACK, new HashSet<>());
+        this.neighbours.put(Colour.WHITE, new HashSet<>());
     }
 
     public Colour getColour() {

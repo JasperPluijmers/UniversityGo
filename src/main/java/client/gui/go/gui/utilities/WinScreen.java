@@ -10,19 +10,20 @@ import javafx.stage.Stage;
 
 public class WinScreen extends Application {
 
-        @Override public void start(Stage stage) {
-            Text text = new Text(10, 40, "Hello World!");
-            text.setFont(new Font(40));
-            Scene scene = new Scene(new Group(text));
+    @Override
+    public void start(Stage stage) {
+        Text text = new Text(10, 40, "Hello World!");
+        text.setFont(new Font(40));
+        Scene scene = new Scene(new Group(text));
 
-            stage.setTitle("Welcome to JavaFX!");
-            stage.setScene(scene);
-            stage.sizeToScene();
-            stage.show();
-        }
-
-        public void launch() {
-            Application.launch();
-        }
-
+        stage.setTitle("Welcome to JavaFX!");
+        stage.setScene(scene);
+        stage.sizeToScene();
+        stage.show();
     }
+
+    public void launch() {
+        Application.launch();
+    }
+
+}

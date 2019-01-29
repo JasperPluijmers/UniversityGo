@@ -15,7 +15,7 @@ public class RoboClient extends Client {
     @Override
     public void askMove() {
         try {
-            this.sleep(10);
+            this.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -24,12 +24,12 @@ public class RoboClient extends Client {
 
     private void determineMove() {
         Board board = super.getBoard();
-        for (int i = 0; i < board.dimension*board.dimension; i++) {
-            if (MoveValidator.validateMove(i,super.getColour(),board)) {
-                talk(ResponseBuilder.move(super.getGameId(), super.getName(),""+i));
+        for (int i = 0; i < board.dimension * board.dimension; i++) {
+            if (MoveValidator.validateMove(i, super.getColour(), board)) {
+                talk(ResponseBuilder.move(super.getGameId(), super.getName(), "" + i));
                 return;
             }
         }
-        talk(ResponseBuilder.move(super.getGameId(), super.getName(),"-1"));
+        talk(ResponseBuilder.move(super.getGameId(), super.getName(), "-1"));
     }
 }

@@ -20,11 +20,11 @@ public class Board {
     public Board(int[] boardState, ArrayList<int[]> history) {
         this.boardState = boardState.clone();
         this.history = history;
-        this.dimension = (int)Math.sqrt(this.boardState.length);
+        this.dimension = (int) Math.sqrt(this.boardState.length);
     }
 
     public Board copy() {
-        return new Board(this.boardState,this.history);
+        return new Board(this.boardState, this.history);
     }
 
     public boolean isempty(int index) {
@@ -46,9 +46,11 @@ public class Board {
     public void updateHistory() {
         history.add(getBoardState());
     }
+
     public int[] getBoardState() {
         return boardState.clone();
     }
+
     public String toString() {
         String boardString = "";
         for (int i = 0; i < dimension * dimension; i++) {

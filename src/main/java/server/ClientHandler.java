@@ -23,10 +23,10 @@ public class ClientHandler extends Thread implements Player {
     private GameHandler gameHandler;
     private boolean turn;
     private Game game;
-    private String tempMove = null;
     private String username;
     private Colour colour;
     private ProtocolHandler protocolHandler;
+    private boolean wantsRematch;
 
     public ClientHandler(Server server, Socket clientSocket) {
         this.server = server;
@@ -42,7 +42,7 @@ public class ClientHandler extends Thread implements Player {
         this.start();
     }
 
-    public void run () {
+    public void run() {
         try {
             server.log("client detected...");
 
@@ -62,7 +62,7 @@ public class ClientHandler extends Thread implements Player {
 
     public void talk(String message) {
         try {
-            this.outStream.write(message+'\n');
+            this.outStream.write(message + '\n');
             this.outStream.flush();
             System.out.println(message);
         } catch (IOException e) {
@@ -74,6 +74,7 @@ public class ClientHandler extends Thread implements Player {
     public void handleSetRematch(int value) {
         gameHandler.rematch(value, this);
     }
+
     private void disconnect() {
         gameHandler.quit(this);
     }
@@ -83,7 +84,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     public void handleMove(int move) {
-        if (turn == true) {
+        if (turn) {
             if (move == -1) {
                 if (game.playMove("PASS", colour)) {
                     turn = false;
@@ -103,6 +104,7 @@ public class ClientHandler extends Thread implements Player {
             e.printStackTrace();
         }
     }
+
     public void handleQuit() {
         gameHandler.quit(this);
         try {
@@ -111,8 +113,9 @@ public class ClientHandler extends Thread implements Player {
             e.printStackTrace();
         }
     }
+
     public void handleSetConfig(int colour, int boardSize) {
-        gameHandler.setConfig(Colour.getByInt(colour),boardSize);
+        gameHandler.setConfig(Colour.getByInt(colour), boardSize);
     }
 
     public void handleHandshake(String username) {
@@ -126,6 +129,7 @@ public class ClientHandler extends Thread implements Player {
     public void handleUnknownCommand(String message) {
         talk(ResponseBuilder.unknownCommand(message));
     }
+
     public boolean isProtocol(String message) {
         return message.matches(".*\\+.*");
     }
@@ -134,8 +138,8 @@ public class ClientHandler extends Thread implements Player {
         talk(ResponseBuilder.requestConfig());
     }
 
-    public void acknowledgeConfig(int dimension, String gameState) {
-        talk(ResponseBuilder.acknowledgeConfig(username, this.colour, dimension, gameState));
+    public void acknowledgeConfig(int dimension, String gameState, String opponent) {
+        talk(ResponseBuilder.acknowledgeConfig(username, this.colour, dimension, gameState, opponent));
     }
 
     @Override
@@ -161,15 +165,15 @@ public class ClientHandler extends Thread implements Player {
 
     //game finish due to quit or disconnect
     public void finishGame() {
-        Map<Colour, Integer> finalScore = gameHandler.score();
+        Map<Colour, Double> finalScore = gameHandler.score();
         gameHandler.setStatus(Status.FINISHED);
-        talk(ResponseBuilder.gameFinished(gameId, username,finalScore.get(Colour.BLACK)+ ";" + finalScore.get(Colour.WHITE),"Other player quit the game"));
+        talk(ResponseBuilder.gameFinished(gameId, username, finalScore.get(Colour.BLACK) + ";" + finalScore.get(Colour.WHITE), "Other player quit the game"));
     }
 
 
     //normal gamefinish
     @Override
-    public void finishGame(String winner, Map<Colour, Integer> score, String reason) {
+    public void finishGame(String winner, Map<Colour, Double> score, String reason) {
         talk(ResponseBuilder.gameFinished(gameId, winner, score.get(Colour.BLACK) + ";" + score.get(Colour.WHITE), reason));
         talk(ResponseBuilder.requestRematch());
     }
@@ -203,5 +207,13 @@ public class ClientHandler extends Thread implements Player {
 
     public void acknowledgeRematch(int value) {
         talk(ResponseBuilder.acknolwedgeRematch(value));
+    }
+
+    public boolean getWantsRematch() {
+        return wantsRematch;
+    }
+
+    public void setWantsRematch(boolean wantsRematch) {
+        this.wantsRematch = wantsRematch;
     }
 }

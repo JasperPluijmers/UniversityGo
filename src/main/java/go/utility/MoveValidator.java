@@ -21,7 +21,7 @@ public class MoveValidator {
         BoardUpdater.updateBoard(move, boardCopy);
 
         for (int[] i : boardCopy.getHistory()) {
-            if (Arrays.equals(i,boardCopy.getBoardState())) {
+            if (Arrays.equals(i, boardCopy.getBoardState())) {
                 //System.out.println("Ko, boardstate has been seen before");
                 return false;
             }

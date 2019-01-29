@@ -84,11 +84,11 @@ public class Client extends Thread {
         System.out.println("GameId:" + this.gameId);
     }
 
-    public void processConfig(String[] config) {
+    public void handleAcknowledgeConfig(String[] config) {
         this.colour = Colour.getByInt(Integer.parseInt(config[2]));
         this.board = new Board(Integer.parseInt(config[3]));
         this.userName = config[1];
-        if (hasGui) {
+        if (hasGui && gui == null) {
             gui = new GoGuiIntegrator(Integer.parseInt(config[3]), this);
             gui.startGUI();
         }
@@ -158,10 +158,10 @@ public class Client extends Thread {
         for (int i = 0; i < boardString.length(); i++) {
             switch (boardString.charAt(i)) {
                 case '1':
-                    gui.addStone(i,Colour.BLACK);
+                    gui.addStone(i, Colour.BLACK);
                     break;
                 case '2':
-                    gui.addStone(i,Colour.WHITE);
+                    gui.addStone(i, Colour.WHITE);
                     break;
             }
         }
@@ -182,6 +182,28 @@ public class Client extends Thread {
         }
         System.exit(1);
     }
+
+
+    public void handleAcknowledgeRematch(int value) {
+        if (value == 0) {
+            talk(ResponseBuilder.exit(gameId, userName));
+            shutdown();
+        }
+        if (value == 1) {
+            board = new Board(board.dimension);
+            if (hasGui) {
+                gui.newMatch();
+            }
+        }
+    }
+
+    public void handleRematch(int value) {
+        talk(ResponseBuilder.setRematch(value));
+        if (value == 0) {
+            shutdown();
+        }
+    }
+
 
     private int readInt(String prompt) {
         int value = 0;
@@ -220,26 +242,6 @@ public class Client extends Thread {
             }
         } while (!intRead);
         return value;
-    }
-
-    public void acknowledgeRematchHandler(int value) {
-        if (value == 0) {
-            talk(ResponseBuilder.exit(gameId,userName));
-            shutdown();
-        }
-        if (value == 1) {
-            board = new Board(board.dimension);
-            if (hasGui) {
-                gui.newMatch();
-            }
-        }
-    }
-
-    public void handleRematch(int value) {
-        talk(ResponseBuilder.setRematch(value));
-        if (value == 0) {
-            shutdown();
-        }
     }
 
     protected Board getBoard() {

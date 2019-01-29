@@ -10,11 +10,11 @@ import java.util.Set;
 
 public class Score {
 
-    public static Map<Colour, Integer> score(Board board) {
+    public static Map<Colour, Double> score(Board board) {
         Set<Integer> checkedFields = new HashSet<>();
-        HashMap<Colour, Integer> scores = new HashMap<>();
-        scores.put(Colour.BLACK, 0);
-        scores.put(Colour.WHITE, 0);
+        HashMap<Colour, Double> scores = new HashMap<>();
+        scores.put(Colour.BLACK, 0.0);
+        scores.put(Colour.WHITE, 0.0);
         for (int i = 0; i < board.dimension * board.dimension; i++) {
             if (board.getEntry(i) == Colour.EMPTY && !checkedFields.contains(i)) {
                 Group group = BoardUpdater.freedoms(i, new Group(Colour.EMPTY), board);
@@ -32,6 +32,8 @@ public class Score {
             if (board.getEntry(i) == Colour.WHITE) {
                 scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 1);
             }
+
+            scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 0.5);
         }
         return scores;
     }

@@ -14,7 +14,7 @@ public class Game {
 
     public Game(int dimension, List<Player> players) {
         this.dimension = dimension;
-        this.state  = new GameState(new Board(dimension), players);
+        this.state = new GameState(new Board(dimension), players);
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setGame(this);
             players.get(i).setColour(Colour.getByInt(i + 1));
@@ -36,7 +36,7 @@ public class Game {
                 state.currentPlayer().requestMove(state.getBoard());
                 break;
             case FINISHED:
-                Map<Colour, Integer> finalScore = Score.score(state.getBoard());
+                Map<Colour, Double> finalScore = Score.score(state.getBoard());
                 int winner = finalScore.get(Colour.BLACK) > finalScore.get(Colour.WHITE) ? 1 : 2;
                 for (Player player : state.getPlayers()) {
                     player.finishGame(state.getPlayers().get(winner - 1).getUsername(), finalScore, "Two passes");
@@ -47,7 +47,7 @@ public class Game {
 
     public void acknowledgeMove(int move, Colour colour) {
         for (Player player : state.getPlayers()) {
-            player.acknowledgeMove(move,colour);
+            player.acknowledgeMove(move, colour);
         }
     }
 
@@ -65,7 +65,7 @@ public class Game {
         } else if (move.matches("(PLAY )\\d*")) {
             int moveNumber = Integer.parseInt(move.split(" ")[1]);
 
-            if(MoveValidator.validateMove(moveNumber, colour, state.getBoard())) {
+            if (MoveValidator.validateMove(moveNumber, colour, state.getBoard())) {
                 state.getBoard().setEntry(moveNumber, colour);
                 state.getBoard().updateHistory();
 
@@ -85,7 +85,6 @@ public class Game {
         }
         return false;
     }
-
 
 
 }

@@ -10,7 +10,7 @@ public class BoardUpdater {
 
     public static void updateBoard(int move, Board board) {
         Set<Integer> checkedFields = new HashSet<>();
-        for (int i = 0; i < board.dimension * board.dimension; i++) {
+        for (int i = 0; i < board.getDimension() * board.getDimension(); i++) {
             if (!checkedFields.contains(i)) {
                 Group currentGroup = new Group(board.getEntry(i));
                 currentGroup = freedoms(i, currentGroup, board);
@@ -50,31 +50,31 @@ public class BoardUpdater {
     public static Set<Integer> neighbours(int index, Board board) {
         Set<Integer> neighbours = new HashSet<Integer>();
         //check if left column
-        if (index % board.dimension == 0) {
+        if (index % board.getDimension() == 0) {
             neighbours.add(index + 1);
-            if (board.isField(index - board.dimension)) {
-                neighbours.add(index - board.dimension);
+            if (board.isField(index - board.getDimension())) {
+                neighbours.add(index - board.getDimension());
             }
-            if (board.isField(index + board.dimension)) {
-                neighbours.add(index + board.dimension);
+            if (board.isField(index + board.getDimension())) {
+                neighbours.add(index + board.getDimension());
             }
-        } else if (index % board.dimension == board.dimension - 1) {
+        } else if (index % board.getDimension() == board.getDimension() - 1) {
             neighbours.add(index - 1);
-            if (board.isField(index - board.dimension)) {
-                neighbours.add(index - board.dimension);
+            if (board.isField(index - board.getDimension())) {
+                neighbours.add(index - board.getDimension());
             }
-            if (board.isField(index + board.dimension)) {
-                neighbours.add(index + board.dimension);
+            if (board.isField(index + board.getDimension())) {
+                neighbours.add(index + board.getDimension());
             }
         } else {
             neighbours.add(index - 1);
             neighbours.add(index + 1);
 
-            if (board.isField(index - board.dimension)) {
-                neighbours.add(index - board.dimension);
+            if (board.isField(index - board.getDimension())) {
+                neighbours.add(index - board.getDimension());
             }
-            if (board.isField(index + board.dimension)) {
-                neighbours.add(index + board.dimension);
+            if (board.isField(index + board.getDimension())) {
+                neighbours.add(index + board.getDimension());
             }
         }
         return neighbours;

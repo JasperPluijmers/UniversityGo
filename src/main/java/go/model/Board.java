@@ -7,7 +7,7 @@ import java.util.*;
 public class Board {
 
     private int[] boardState;
-    public int dimension;
+    private int dimension;
     private ArrayList<int[]> history;
 
     public Board(int size) {
@@ -49,6 +49,10 @@ public class Board {
 
     public int[] getBoardState() {
         return boardState.clone();
+    }
+
+    public int getDimension() {
+        return dimension;
     }
 
     public String toString() {

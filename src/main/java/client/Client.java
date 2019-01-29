@@ -29,6 +29,7 @@ public class Client extends Thread {
     private GoGuiIntegrator gui;
     private boolean hasGui;
     private ProtocolHandler protocolHandler;
+    private int lastMove;
 
     public Client(String name, InetAddress host, int port, boolean hasGui) {
 
@@ -168,6 +169,7 @@ public class Client extends Thread {
     }
 
     public void highlightMove(String move) {
+        lastMove = Integer.parseInt(move.split(";")[0]);
         if (!move.split(";")[0].equals("-1")) {
             gui.highlightStone(Integer.parseInt(move.split(";")[0]));
         }
@@ -190,7 +192,7 @@ public class Client extends Thread {
             shutdown();
         }
         if (value == 1) {
-            board = new Board(board.dimension);
+            board = new Board(board.getDimension());
             if (hasGui) {
                 gui.newMatch();
             }
@@ -244,6 +246,9 @@ public class Client extends Thread {
         return value;
     }
 
+    protected int getLastMove() {
+        return lastMove;
+    }
     protected Board getBoard() {
         return this.board;
     }

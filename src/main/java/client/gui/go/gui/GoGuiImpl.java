@@ -310,7 +310,7 @@ public class GoGuiImpl extends Application {
 
         // Set position of second window, related to primary window.
         finishWindow.setX(primaryStage.getX() + 200);
-        finishWindow.setY(primaryStage.getY() + 100);
+        finishWindow.setY(primaryStage.getY() + 200);
 
         finishWindow.show();
     }
@@ -321,7 +321,7 @@ public class GoGuiImpl extends Application {
         Button noButton = new Button("No");
         Button yesButton = new Button("Yes");
 
-        Scene rematchScene = new Scene(rematchPane, 230, 100);
+        Scene rematchScene = new Scene(rematchPane);
         // New window (Stage)
         rematchWindow = new Stage();
 

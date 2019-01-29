@@ -51,6 +51,6 @@ public class Group {
 
     @Override
     public String toString() {
-        return String.format("Group of %d, containing:" + groupMembers, colour);
+        return String.format("Group of %s, containing:" + groupMembers, colour);
     }
 }

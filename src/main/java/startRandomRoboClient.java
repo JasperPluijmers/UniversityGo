@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 //NVC3827, 5698 <sarah
 //localhost, 3001
 
-public class startRoboClient {
+public class startRandomRoboClient {
     public static void main(String[] args) {
 
         InetAddress host = null;
@@ -22,7 +22,7 @@ public class startRoboClient {
             System.exit(0);
         }
 
-        RoboClient client = new RoboClient("Jasper", host, 2001, true);
+        RandomRoboClient client = new RandomRoboClient("Jasper", host, 2001, true);
         client.start();
 
 

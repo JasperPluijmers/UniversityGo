@@ -69,8 +69,8 @@ public class ProtocolHandler {
 
     private void acknowledgeMoveSanitizer(String[] command) {
         if (command.length == 4) {
-            client.updateStatus(command[3]);
             client.highlightMove(command[2]);
+            client.updateStatus(command[3]);
         }
     }
 

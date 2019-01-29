@@ -15,7 +15,7 @@ public class Score {
         HashMap<Colour, Double> scores = new HashMap<>();
         scores.put(Colour.BLACK, 0.0);
         scores.put(Colour.WHITE, 0.0);
-        for (int i = 0; i < board.dimension * board.dimension; i++) {
+        for (int i = 0; i < board.getDimension() * board.getDimension(); i++) {
             if (board.getEntry(i) == Colour.EMPTY && !checkedFields.contains(i)) {
                 Group group = BoardUpdater.freedoms(i, new Group(Colour.EMPTY), board);
                 checkedFields.addAll(group.getGroupMembers());
@@ -33,8 +33,9 @@ public class Score {
                 scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 1);
             }
 
-            scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 0.5);
+
         }
+        scores.put(Colour.WHITE, scores.get(Colour.WHITE) + 0.5);
         return scores;
     }
 }

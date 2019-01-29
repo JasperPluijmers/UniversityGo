@@ -16,13 +16,13 @@ public class startClient {
         InetAddress host = null;
 
         try {
-            host = InetAddress.getByName("NVC3827");
+            host = InetAddress.getByName("localhost");
         } catch (UnknownHostException e) {
             System.out.println("ERROR: no valid hostname!");
             System.exit(0);
         }
 
-        Client client = new Client("Jasper", host, 2020, true);
+        Client client = new Client("Jasper", host, 2001, true);
         client.start();
     }
 }

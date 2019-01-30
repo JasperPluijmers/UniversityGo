@@ -1,8 +1,15 @@
 import server.Server;
 
+import java.io.IOException;
+
 public class startServer {
 
     public static void main(String[] args) {
-        new Server().start();
+        try {
+            Server server = new Server();
+            server.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

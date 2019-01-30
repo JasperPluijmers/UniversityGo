@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 //localhost, 3001
 
 public class startRandomRoboClient {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         InetAddress host = null;
 

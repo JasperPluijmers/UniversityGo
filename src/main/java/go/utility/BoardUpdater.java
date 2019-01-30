@@ -16,7 +16,8 @@ public class BoardUpdater {
      * Method makes all Groups that are not EMPTY, if they have no freedoms they get removed.
      * The group containing the last played move is checked only at the end as Go prioritizes capturing other groups
      * before being captured.
-     * @param move Move that needs to be checked
+     *
+     * @param move  Move that needs to be checked
      * @param board Board that the move is played on
      */
     public static void updateBoard(int move, Board board) {
@@ -59,6 +60,7 @@ public class BoardUpdater {
      * Takes an index, a Group object and a Board to fill the Group object with its neighbours and groupmembers by checking
      * the neighbours of the index and either adding them to the neighbours of the Group or adding them as groupmembers. If added
      * as groupmember the method is called again on that index.
+     *
      * @param index Index that is contained in the group
      * @param group Group object that is being built, initially it can be an empty Group
      * @param board Board that the group is calculated on
@@ -89,40 +91,61 @@ public class BoardUpdater {
 
     /**
      * Calculates the neighbours of an index.
+     *
      * @param index The index that needs its neighbours checked
      * @param board The board on which we are playing
      * @return A set of Integer which are the neighbour of the index
      */
-    public static Set<Integer> neighbours(int index, Board board) {
-        Set<Integer> neighbours = new HashSet<Integer>();
-        //check if left column
-        if (index % board.getDimension() == 0) {
-            neighbours.add(index + 1);
-            if (board.isField(index - board.getDimension())) {
-                neighbours.add(index - board.getDimension());
-            }
-            if (board.isField(index + board.getDimension())) {
-                neighbours.add(index + board.getDimension());
-            }
-        } else if (index % board.getDimension() == board.getDimension() - 1) {
-            neighbours.add(index - 1);
-            if (board.isField(index - board.getDimension())) {
-                neighbours.add(index - board.getDimension());
-            }
-            if (board.isField(index + board.getDimension())) {
-                neighbours.add(index + board.getDimension());
-            }
-        } else {
-            neighbours.add(index - 1);
-            neighbours.add(index + 1);
 
-            if (board.isField(index - board.getDimension())) {
-                neighbours.add(index - board.getDimension());
-            }
-            if (board.isField(index + board.getDimension())) {
-                neighbours.add(index + board.getDimension());
-            }
+    public static Set<Integer> neighbours(int index, Board board) {
+        Set<Integer> neighbours = new HashSet<>();
+
+        if (index % board.getDimension() != 0) {
+            neighbours.add(index - 1);
+        }
+        if (index % board.getDimension() != board.getDimension() - 1) {
+            neighbours.add(index + 1);
+        }
+        if (board.isField(index - board.getDimension())) {
+            neighbours.add(index - board.getDimension());
+        }
+        if (board.isField(index + board.getDimension())) {
+            neighbours.add(index + board.getDimension());
         }
         return neighbours;
     }
+
+/*    public static Set<Integer> extendedNeighbours(int index, Board board) {
+        Set<Integer> neighbours = new HashSet<>();
+
+        if (index % board.getDimension() != 0) {
+            neighbours.add(index - 1);
+        }
+        if (index % board.getDimension() != board.getDimension() - 1) {
+            neighbours.add(index + 1);
+        }
+        if (board.isField(index - board.getDimension())) {
+            neighbours.add(index - board.getDimension());
+
+            neighbours.add(index - board.getDimension() - 1);
+            neighbours.add(index - board.getDimension() + 1);
+        }
+        if (board.isField(index + board.getDimension())) {
+            neighbours.add(index + board.getDimension());
+            neighbours.add(index + board.getDimension() - 1);
+            neighbours.add(index + board.getDimension() + 1);
+        }
+        return neighbours;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(extendedNeighbours(0, new Board(4)));
+        System.out.println(extendedNeighbours(1, new Board(4)));
+        System.out.println(extendedNeighbours(5, new Board(4)));
+        System.out.println(extendedNeighbours(12, new Board(4)));
+        System.out.println(extendedNeighbours(13, new Board(4)));
+        System.out.println(extendedNeighbours(15, new Board(4)));
+    }*/
+
 }
+

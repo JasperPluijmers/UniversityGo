@@ -41,17 +41,14 @@ public class Client extends Thread {
      * @param port Port the server is listening on
      * @param hasGui If the client hsould launch a gui
      */
-    public Client(String name, InetAddress host, int port, boolean hasGui) {
+    public Client(String name, InetAddress host, int port, boolean hasGui) throws IOException {
 
         this.userName = name;
 
-        try {
-            sock = new Socket(host, port);
-            this.inStream = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
-            this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        sock = new Socket(host, port);
+        this.inStream = new BufferedReader(new InputStreamReader(this.sock.getInputStream()));
+        this.outStream = new BufferedWriter(new OutputStreamWriter(this.sock.getOutputStream()));
 
         this.talk(ResponseBuilder.handshake(name));
 

@@ -1,18 +1,13 @@
 package client;
 
-import client.roboresources.BoardStateValue;
 import client.utilities.ResponseBuilder;
-import go.model.Board;
-import go.utility.MoveValidator;
 
+import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class RandomRoboClient extends RoboClient {
 
-    public RandomRoboClient(String name, InetAddress host, int port, boolean hasGui) {
+    public RandomRoboClient(String name, InetAddress host, int port, boolean hasGui) throws IOException {
         super(name, host, port, hasGui);
     }
 

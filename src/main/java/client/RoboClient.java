@@ -5,6 +5,7 @@ import client.utilities.ResponseBuilder;
 import go.model.Board;
 import go.utility.MoveValidator;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Random;
 
 public class RoboClient extends Client {
 
-    public RoboClient(String name, InetAddress host, int port, boolean hasGui) {
+    public RoboClient(String name, InetAddress host, int port, boolean hasGui) throws IOException {
         super(name, host, port, hasGui);
     }
 

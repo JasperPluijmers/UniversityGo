@@ -16,14 +16,18 @@ public class Server {
 
     private List<ClientHandler> clientHandlers = new ArrayList();
     private List<GameHandler> gameHandlers = new ArrayList<>();
+    private ServerSocket serverSocket;
 
-    public Server(int port) {
+    public Server (int port) throws IOException {
         this.port = port;
-
+        serverSocket = new ServerSocket(port);
+        System.out.println("Listning on port: " + port);
     }
 
-    public Server() {
+    public Server() throws IOException {
         this.port = DEFAULT_PORT;
+        serverSocket = new ServerSocket(port);
+        System.out.println("Listning on port: " + port);
     }
 
     public void log(String message) {
@@ -32,9 +36,6 @@ public class Server {
 
     public void start() {
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Listning on port: " + port);
-
             while (true) {
                 Socket firstPlayer = serverSocket.accept();
 

@@ -11,9 +11,10 @@ public class MoveValidator {
 
     /**
      * Checks if a certain move is valid.
-     * @param move Index of the move that needs to be checked
+     *
+     * @param move   Index of the move that needs to be checked
      * @param colour Colour of the move being played
-     * @param board The board on which the move is played
+     * @param board  The board on which the move is played
      * @return Returns true if a valid move, false if not a valid move
      */
     public static boolean validateMove(int move, Colour colour, Board board) {

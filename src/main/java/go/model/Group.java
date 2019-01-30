@@ -19,6 +19,7 @@ public class Group {
 
     /**
      * Constructs an empty Group
+     *
      * @param colour
      */
     public Group(Colour colour) {

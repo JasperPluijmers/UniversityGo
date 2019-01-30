@@ -17,6 +17,7 @@ public class Score {
      * of empty fields. If the empty Group does not have any neighbours of one colour, the other colour controls the Group and gets
      * the points.
      * If a stone is BLACK or WHITE the colour gets one added to the score. Afterwards a half point is added to white so no draws are possible.
+     *
      * @param board Board that the score needs to be calculated for
      * @return a Map that maps Colour.BLACK and Colour.WHITE to their respective score in Double format.
      */

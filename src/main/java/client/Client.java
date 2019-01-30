@@ -1,17 +1,13 @@
 package client;
 
+import client.gui.go.gui.GoGuiIntegrator;
 import client.roboresources.BoardStateValue;
 import client.utilities.ProtocolHandler;
 import client.utilities.ResponseBuilder;
-import client.gui.go.gui.GoGuiIntegrator;
 import go.model.Board;
 import go.utility.Colour;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -36,9 +32,10 @@ public class Client extends Thread {
 
     /**
      * Constructs a Client object, tries to create a socket connetion with a specified address and port
-     * @param name Username of the client, used in communication with the server
-     * @param host Hostaddress of the server
-     * @param port Port the server is listening on
+     *
+     * @param name   Username of the client, used in communication with the server
+     * @param host   Hostaddress of the server
+     * @param port   Port the server is listening on
      * @param hasGui If the client hsould launch a gui
      */
     public Client(String name, InetAddress host, int port, boolean hasGui) throws IOException {
@@ -73,6 +70,7 @@ public class Client extends Thread {
 
     /**
      * Method sends a String over the socket to the server
+     *
      * @param message String that has to be sent
      */
     public void talk(String message) {
@@ -89,6 +87,7 @@ public class Client extends Thread {
 
     /**
      * Sets gameId sent from the server in the handshake
+     *
      * @param gameId
      */
     public void handleHandshake(int gameId) {
@@ -98,6 +97,7 @@ public class Client extends Thread {
 
     /**
      * Set colour and username sent from the server, creates a new board and starts the gui.
+     *
      * @param config
      */
     public void handleAcknowledgeConfig(String[] config) {
@@ -112,6 +112,7 @@ public class Client extends Thread {
 
     /**
      * Parses the winmessage from the server and sends it to the gui
+     *
      * @param message
      */
     public void gameFinished(String[] message) {
@@ -135,6 +136,7 @@ public class Client extends Thread {
 
     /**
      * Updates current status to the status update from the server, if turn of hte player notifies the gui and updates the board.
+     *
      * @param status
      */
     public void updateStatus(String status) {
@@ -158,6 +160,7 @@ public class Client extends Thread {
 
     /**
      * Method that gets called when clicked on the gui, sends the corresponding move to the server
+     *
      * @param index
      */
     public void clickMove(int index) {
@@ -188,6 +191,7 @@ public class Client extends Thread {
 
     /**
      * Updates the current with the latest board representation
+     *
      * @param boardString
      */
     public void updateGui(String boardString) {
@@ -206,6 +210,7 @@ public class Client extends Thread {
 
     /**
      * Highlights the last move on the gui
+     *
      * @param move
      */
     public void highlightMove(String move) {
@@ -218,6 +223,7 @@ public class Client extends Thread {
     /**
      * Disconnects from the server if opponent does not want a rematch or starts a new board and refreshes gui if a
      * rematch is initated.
+     *
      * @param value
      */
     public void handleAcknowledgeRematch(int value) {
@@ -235,6 +241,7 @@ public class Client extends Thread {
 
     /**
      * Notifies server of choice of rematch.
+     *
      * @param value
      */
     public void handleRematch(int value) {
@@ -268,6 +275,7 @@ public class Client extends Thread {
 
     /**
      * Reads an int from user input, keeps trying untill an int is put in
+     *
      * @param prompt Message to be shown in the terminal
      * @return
      */
@@ -289,6 +297,7 @@ public class Client extends Thread {
 
     /**
      * Reads a String from user input
+     *
      * @param prompt Message to be shown in the terminal
      * @return
      */
@@ -318,6 +327,7 @@ public class Client extends Thread {
     protected int getLastMove() {
         return lastMove;
     }
+
     protected Board getBoard() {
         return this.board;
     }
@@ -329,12 +339,13 @@ public class Client extends Thread {
     protected int getGameId() {
         return this.gameId;
     }
+
     protected String getUserName() {
         return userName;
     }
 
     public void askHint() {
-        BoardStateValue boardStateValue = new BoardStateValue(board,colour);
+        BoardStateValue boardStateValue = new BoardStateValue(board, colour);
         int bestMove = boardStateValue.bestMove();
         gui.addStone(bestMove, Colour.GREEN);
     }

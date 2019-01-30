@@ -6,8 +6,6 @@ import go.model.Board;
 import java.util.Map;
 import java.util.Scanner;
 
-import static java.util.jar.Pack200.Packer.PASS;
-
 //does not work right now
 public class TerminalPlayer implements Player {
 

@@ -18,6 +18,7 @@ public enum Colour {
 
     /**
      * Returns Colour enum of the value asked.
+     *
      * @param value 0, 1 or 2 corresponding to EMPTY, BLACK or WHITE
      * @return Colour enum
      */

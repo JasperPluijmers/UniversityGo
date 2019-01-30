@@ -1,6 +1,7 @@
 import server.Server;
 
 import java.io.IOException;
+
 /**
  * Class for testing purposes, please ignore.
  */

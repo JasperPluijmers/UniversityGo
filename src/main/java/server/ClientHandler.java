@@ -35,6 +35,7 @@ public class ClientHandler extends Thread implements Player {
     /**
      * Constructs a ClientHandler with a given Server and Socket.
      * Opens a communication channels to the socket and starts this communication by starting a new thread on this object.
+     *
      * @param server
      * @param clientSocket
      */
@@ -77,6 +78,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Checks if a String is part of the protocol by checking if it corresponds to the regex pattern.
+     *
      * @param message String to be checked
      * @return
      */
@@ -86,6 +88,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sends a String over the Socket
+     *
      * @param message String sent over the Socket
      */
     public void talk(String message) {
@@ -119,6 +122,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Communicates if the client wants a rematch to the GameHandler.
+     *
      * @param value 1 if client wants a rematch, 0 if he does not.
      */
     public void handleSetRematch(int value) {
@@ -134,6 +138,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Plays a move in the Game
+     *
      * @param move can either be -1 for pass or a valid index for the board
      */
     public void handleMove(int move) {
@@ -160,7 +165,8 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Communicates config preferences to the GameHandler
-     * @param colour preferred colour of the client
+     *
+     * @param colour    preferred colour of the client
      * @param boardSize preferred boardsize of the client
      */
     public void handleSetConfig(int colour, int boardSize) {
@@ -169,6 +175,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sets username and communicates handshake to the GameHandler
+     *
      * @param username preferred username of the client
      */
     public void handleHandshake(String username) {
@@ -180,6 +187,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sends unknown command command over the socket
+     *
      * @param message Error message to be sent with the unknown command command
      */
     public void handleUnknownCommand(String message) {
@@ -196,9 +204,10 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sends acknowledgement of the config over the socket
+     *
      * @param dimension Size of length of the board the game is going to be played on
      * @param gameState Current gamestate
-     * @param opponent Username of the copponent
+     * @param opponent  Username of the copponent
      */
     public void acknowledgeConfig(int dimension, String gameState, String opponent) {
         talk(ResponseBuilder.acknowledgeConfig(username, this.colour, dimension, gameState, opponent));
@@ -214,7 +223,8 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sets acknowledgement of a move over the Socket
-     * @param move Move that has been played, can be -1 for pass or a valid index on the board
+     *
+     * @param move   Move that has been played, can be -1 for pass or a valid index on the board
      * @param colour Colour of the move that has been played, can be 1 for black or 2 for white
      */
     @Override
@@ -233,6 +243,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sends score to the client when a game is finished due to two passes
+     *
      * @param winner
      * @param score
      * @param reason
@@ -245,6 +256,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sets flag that corresponds to if the client is able to make a move
+     *
      * @param board Current Board of the game
      */
     @Override
@@ -254,6 +266,7 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Sends Acknowledgement of a rematch command
+     *
      * @param value 1 if a rematch is going to be played, 0 if no rematch is going to be played.
      */
     public void acknowledgeRematch(int value) {
@@ -269,7 +282,6 @@ public class ClientHandler extends Thread implements Player {
     public void setColour(Colour colour) {
         this.colour = colour;
     }
-
 
 
     @Override

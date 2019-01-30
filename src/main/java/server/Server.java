@@ -18,14 +18,14 @@ public class Server {
     private List<GameHandler> gameHandlers = new ArrayList<>();
     private ServerSocket serverSocket;
 
-    public Server (int port) throws IOException {
-        this.port = port;
+    public Server(int port) throws IOException {
+        Server.port = port;
         serverSocket = new ServerSocket(port);
         System.out.println("Listning on port: " + port);
     }
 
     public Server() throws IOException {
-        this.port = DEFAULT_PORT;
+        port = DEFAULT_PORT;
         serverSocket = new ServerSocket(port);
         System.out.println("Listning on port: " + port);
     }

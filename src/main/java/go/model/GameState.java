@@ -3,7 +3,6 @@ package go.model;
 import go.utility.Player;
 import go.utility.Status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

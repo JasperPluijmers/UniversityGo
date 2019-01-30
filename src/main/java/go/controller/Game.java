@@ -1,11 +1,12 @@
 package go.controller;
 
 
-import go.utility.*;
 import go.model.Board;
 import go.model.GameState;
+import go.utility.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for a game of go, this class handles the turns and stops the game if someone wins.
@@ -16,8 +17,9 @@ public class Game {
 
     /**
      * Constructs a Game object, which in turn constructs a gamestate with a new board.
+     *
      * @param dimension The size of the board of the game
-     * @param players List of players in the game, first player in this list plays as black, the second one plays as white
+     * @param players   List of players in the game, first player in this list plays as black, the second one plays as white
      */
     public Game(int dimension, List<Player> players) {
         this.state = new GameState(new Board(dimension), players);
@@ -55,7 +57,8 @@ public class Game {
 
     /**
      * Notifies the players that a move has been played
-     * @param move The move that has been played
+     *
+     * @param move   The move that has been played
      * @param colour The colour of the move that has been played
      */
     public void acknowledgeMove(int move, Colour colour) {
@@ -67,7 +70,8 @@ public class Game {
     /**
      * Plays a certain move on the board.
      * Returns true if a move has been played or false if if the move was not played because it was not valid
-     * @param move Move that has to be played, either "PASS" or "PLAY n" where n should be an integer
+     *
+     * @param move   Move that has to be played, either "PASS" or "PLAY n" where n should be an integer
      * @param colour
      * @return
      */
@@ -87,7 +91,7 @@ public class Game {
             nextTurn();
             return true;
 
-        //Logic for playing a normal move
+            //Logic for playing a normal move
         } else if (move.matches("(PLAY )\\d*")) {
             //Get the move from the string
             int moveNumber = Integer.parseInt(move.split(" ")[1]);

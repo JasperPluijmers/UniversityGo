@@ -19,6 +19,7 @@ public enum ClientCommand {
     /**
      * Returns a ClientCommand corresponding to the specified name, or throws an exception if the name does not
      * correspond to any ClientCommand.
+     *
      * @param name name to search for
      * @return
      */

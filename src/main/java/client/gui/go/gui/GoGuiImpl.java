@@ -5,12 +5,10 @@ import client.gui.go.gui.utilities.ClickListener;
 import client.gui.go.gui.utilities.ClickMoveListener;
 import go.utility.Colour;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -19,7 +17,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,9 +92,11 @@ public class GoGuiImpl extends Application {
     public void setPassButtonListener(ClickListener clickListener) {
         this.passButtonListener = clickListener;
     }
+
     public void setHintButtonListener(ClickListener clickListener) {
         this.hintButtonListener = clickListener;
     }
+
     public void setPlaceHolderButtonListener(ClickMoveListener clickListener) {
         this.placeHolderButtonListener = clickListener;
     }

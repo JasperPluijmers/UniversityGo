@@ -1,6 +1,4 @@
-import client.Client;
 import client.RandomRoboClient;
-import client.RoboClient;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -9,6 +7,7 @@ import java.net.UnknownHostException;
 //NVC3823, 8000 <gerjan
 //NVC3827, 5698 <sarah
 //localhost, 3001
+
 /**
  * Class for testing purposes, please ignore.
  */

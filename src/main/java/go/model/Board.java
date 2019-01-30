@@ -2,7 +2,8 @@ package go.model;
 
 import go.utility.Colour;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Board class that represents a Go board
@@ -48,6 +49,7 @@ public class Board {
 
     /**
      * Checks if a field is an EMPTY field
+     *
      * @param index
      * @return true if the field is EMPTY, false if the field is not EMPTY
      */
@@ -64,6 +66,7 @@ public class Board {
 
     /**
      * String representation that shows the board in a TUI
+     *
      * @return
      */
     public String toString() {
@@ -86,6 +89,7 @@ public class Board {
 
     /**
      * Creates a string representation that complies to the protocol
+     *
      * @return A string of length dimension * dimension containing 0, 1 and 2
      */
     public String stringRep() {
@@ -94,6 +98,7 @@ public class Board {
 
     /**
      * updates the board from a string that complies to the protocol
+     *
      * @param stringRep
      */
     public void fromString(String stringRep) {
@@ -105,6 +110,7 @@ public class Board {
 
     /**
      * Checks if field is a valid field in the board
+     *
      * @param index
      * @return
      */

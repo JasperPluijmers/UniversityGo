@@ -28,7 +28,9 @@ public class GameHandler extends Thread {
     private Map<ClientHandler, Colour> players;
 
 
-    /** Constructs a GameHandler object
+    /**
+     * Constructs a GameHandler object
+     *
      * @param gameId given by the server
      */
     public GameHandler(int gameId) {
@@ -37,7 +39,9 @@ public class GameHandler extends Thread {
         this.status = Status.WAITING;
     }
 
-    /** Adds a player to this GameHandler
+    /**
+     * Adds a player to this GameHandler
+     *
      * @param player that needs to be added to gameHandler
      */
     public void addPlayer(ClientHandler player) {
@@ -46,6 +50,7 @@ public class GameHandler extends Thread {
 
     /**
      * Starts config for a player. If leading player the prefered configurations are asked otherwise configurations are set.
+     *
      * @param player The Player that tries to set the config
      */
     public void configPlayer(ClientHandler player) {
@@ -73,7 +78,8 @@ public class GameHandler extends Thread {
 
     /**
      * Sets the config to be used for the construction of the Game object
-     * @param colour Preferred colour of the leading player
+     *
+     * @param colour    Preferred colour of the leading player
      * @param dimension Preferred size of the length of the board
      */
     public void setConfig(Colour colour, int dimension) {
@@ -113,6 +119,7 @@ public class GameHandler extends Thread {
 
     /**
      * Handles the sudden disconnection of a Player by notifying the other Player and finishing the game.
+     *
      * @param clientHandler The client that disconnects
      */
     public void quit(ClientHandler clientHandler) {
@@ -127,6 +134,7 @@ public class GameHandler extends Thread {
 
     /**
      * Constructs and returns a string representation of the gamestate
+     *
      * @return
      */
     public String gameState() {
@@ -137,7 +145,8 @@ public class GameHandler extends Thread {
      * Handles the rematch functionality. If a player does not want a rematch, notifies the other player and disconnects everyone.
      * If a player wants a rematch, check if the other players also wants a rematch and flag itself as wanting a rematch.
      * If both players want a rematch start a new game with the same configuration.
-     * @param value 0 if player does not want a rematch, 1 if player wants a rematch
+     *
+     * @param value  0 if player does not want a rematch, 1 if player wants a rematch
      * @param player player that notifies preference of rematching
      */
     public void rematch(int value, ClientHandler player) {
@@ -162,6 +171,7 @@ public class GameHandler extends Thread {
 
     /**
      * Returns the other ClientHandler object in the game
+     *
      * @param player not the other player?
      * @return
      */
@@ -175,6 +185,7 @@ public class GameHandler extends Thread {
 
     /**
      * Calculates score of the current board
+     *
      * @return
      */
     public Map<Colour, Double> score() {

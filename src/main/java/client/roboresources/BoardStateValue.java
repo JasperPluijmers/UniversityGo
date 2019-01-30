@@ -17,7 +17,7 @@ public class BoardStateValue {
     private Map<Colour, Integer> freedoms;
     private Map<Colour, Double> score;
 
-    private final double SCORE_CONSTANT = 1;
+    private final double SCORE_CONSTANT = 3;
     private final double FREEDOM_CONSTANT = 1.5;
 
     public BoardStateValue(Board board, Colour colour) {
@@ -49,7 +49,7 @@ public class BoardStateValue {
     }
     private double pointDif(int index) {
         /*System.out.println("Index:" + index);*/
-        Board newBoard = board.copy();
+        Board newBoard = board.deepCopy();
         newBoard.setEntry(index, colour);
         BoardUpdater.updateBoard(index, newBoard);
         return new BoardStateValue(newBoard, colour).calculateBoardValue() - calculateBoardValue();
@@ -62,7 +62,7 @@ public class BoardStateValue {
     }
 
     private double freedomPoints() {
-        return FREEDOM_CONSTANT * (1 + 1.5 * freedoms.get(colour))/(1 + freedoms.get(otherColour()));
+        return FREEDOM_CONSTANT * (1 + freedoms.get(colour))/(1 +  5 * freedoms.get(otherColour()));
     }
 
     private Map<Colour, Integer> totalFreedoms() {
@@ -91,7 +91,7 @@ public class BoardStateValue {
 
         for (int i = 0; i < board.getDimension() * board.getDimension(); i++) {
             if (!checkedFields.contains(i)) {
-                Group currentGroup = BoardUpdater.freedoms(i, new Group(board.getEntry(i)), board);
+                Group currentGroup = BoardUpdater.buildGroup(i, new Group(board.getEntry(i)), board);
                 groups.add(currentGroup);
                 checkedFields.addAll(currentGroup.getGroupMembers());
             }

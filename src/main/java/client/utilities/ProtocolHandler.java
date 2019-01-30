@@ -2,6 +2,9 @@ package client.utilities;
 
 import client.Client;
 
+/**
+ * Class switches command on ServerCommand enum, then sanitizes the command and calls correct methods in the Client class
+ */
 public class ProtocolHandler {
 
     private Client client;
@@ -51,7 +54,7 @@ public class ProtocolHandler {
     }
 
     private void requestRematchSanitizer(String[] command) {
-        client.requestRematch();
+        client.handleRequestRematch();
     }
 
     private void gameFinishedSanitizer(String[] command) {

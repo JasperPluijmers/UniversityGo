@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The Server creates a Serversocket which waits untill a connection is formed. A connection is put into a ClientHandler. Every two ClientHandlers are put into a GameHandler
+ */
 public class Server {
     public static final int DEFAULT_PORT = 2001;
     public static int port;

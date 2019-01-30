@@ -18,7 +18,7 @@ public class RandomRoboClient extends RoboClient {
 
     @Override
     public void determineMove() {
-        talk(ResponseBuilder.move(super.getGameId(), super.getName(), "" + super.randomMove()));
+        talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "" + super.randomMove()));
     }
 
 }

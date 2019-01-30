@@ -1,5 +1,6 @@
 package client;
 
+import client.roboresources.BoardStateValue;
 import client.utilities.ProtocolHandler;
 import client.utilities.ResponseBuilder;
 import client.gui.go.gui.GoGuiIntegrator;
@@ -15,7 +16,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-
+/**
+ * A Client to communicate with a Server playing a game of Go coomplying with the following protocol: https://github.com/JasperPluijmers/GoProtocol
+ */
 public class Client extends Thread {
 
     private String userName;
@@ -31,6 +34,13 @@ public class Client extends Thread {
     private ProtocolHandler protocolHandler;
     private int lastMove;
 
+    /**
+     * Constructs a Client object, tries to create a socket connetion with a specified address and port
+     * @param name Username of the client, used in communication with the server
+     * @param host Hostaddress of the server
+     * @param port Port the server is listening on
+     * @param hasGui If the client hsould launch a gui
+     */
     public Client(String name, InetAddress host, int port, boolean hasGui) {
 
         this.userName = name;
@@ -49,7 +59,9 @@ public class Client extends Thread {
         this.protocolHandler = new ProtocolHandler(this);
     }
 
-
+    /**
+     * Runnable method that checks for incoming messages over the socket and routes them to the a ProtocolHandler
+     */
     public void run() {
         String nextLine;
         try {
@@ -62,6 +74,10 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Method sends a String over the socket to the server
+     * @param message String that has to be sent
+     */
     public void talk(String message) {
         try {
             //System.out.println("sent: " + message);
@@ -74,17 +90,19 @@ public class Client extends Thread {
 
     }
 
-    public void requestRematch() {
-        if (hasGui) {
-            gui.requestRematch();
-        }
-    }
-
+    /**
+     * Sets gameId sent from the server in the handshake
+     * @param gameId
+     */
     public void handleHandshake(int gameId) {
         this.gameId = gameId;
         System.out.println("GameId:" + this.gameId);
     }
 
+    /**
+     * Set colour and username sent from the server, creates a new board and starts the gui.
+     * @param config
+     */
     public void handleAcknowledgeConfig(String[] config) {
         this.colour = Colour.getByInt(Integer.parseInt(config[2]));
         this.board = new Board(Integer.parseInt(config[3]));
@@ -95,6 +113,10 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Parses the winmessage from the server and sends it to the gui
+     * @param message
+     */
     public void gameFinished(String[] message) {
         String[] score = message[3].split(";");
         String winString = message[2] + " won the game with id: " + message[1] + "." + "\nBlack (1) got " + score[0] + " points." + "\nWhite (2) got " + score[1] + " points.";
@@ -104,6 +126,9 @@ public class Client extends Thread {
         System.out.println(winString);
     }
 
+    /**
+     * Asks for configuration input via the terminal, then sends it to the server
+     */
     public void makeConfig() {
         int prefColor = readInt("What is your preferred colour? black (1) or white (2)");
         int boardSize = readInt("What boardsize would you like?");
@@ -111,6 +136,10 @@ public class Client extends Thread {
         talk(ResponseBuilder.setConfig(gameId, prefColor, boardSize));
     }
 
+    /**
+     * Updates current status to the status update from the server, if turn of hte player notifies the gui and updates the board.
+     * @param status
+     */
     public void updateStatus(String status) {
         String[] stati = status.split(";");
 
@@ -125,18 +154,24 @@ public class Client extends Thread {
             gui.setTurn(turn);
         }
 
-
         if (hasGui) {
             updateGui(stati[2]);
         }
     }
 
+    /**
+     * Method that gets called when clicked on the gui, sends the corresponding move to the server
+     * @param index
+     */
     public void clickMove(int index) {
-        if (turn == true) {
+        if (turn) {
             talk(ResponseBuilder.move(this.gameId, this.userName, String.valueOf(index)));
         }
     }
 
+    /**
+     * called if it is the turn of the player, if gui is active it is notified, otherwise the terminal input is initiated.
+     */
     public void askMove() {
         if (!hasGui) {
             System.out.println(board.toString());
@@ -154,6 +189,10 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Updates the current with the latest board representation
+     * @param boardString
+     */
     public void updateGui(String boardString) {
         gui.clearBoard();
         for (int i = 0; i < boardString.length(); i++) {
@@ -168,6 +207,10 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Highlights the last move on the gui
+     * @param move
+     */
     public void highlightMove(String move) {
         lastMove = Integer.parseInt(move.split(";")[0]);
         if (!move.split(";")[0].equals("-1")) {
@@ -175,17 +218,11 @@ public class Client extends Thread {
         }
     }
 
-    public void shutdown() {
-        System.out.println("Closing socket connection...");
-        try {
-            sock.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.exit(1);
-    }
-
-
+    /**
+     * Disconnects from the server if opponent does not want a rematch or starts a new board and refreshes gui if a
+     * rematch is initated.
+     * @param value
+     */
     public void handleAcknowledgeRematch(int value) {
         if (value == 0) {
             talk(ResponseBuilder.exit(gameId, userName));
@@ -199,6 +236,10 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Notifies server of choice of rematch.
+     * @param value
+     */
     public void handleRematch(int value) {
         talk(ResponseBuilder.setRematch(value));
         if (value == 0) {
@@ -206,7 +247,33 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * notifies gui so a rematch popup can be shown
+     */
+    public void handleRequestRematch() {
+        if (hasGui) {
+            gui.requestRematch();
+        }
+    }
 
+    /**
+     * Closes the socket connection, then terminates the program
+     */
+    private void shutdown() {
+        System.out.println("Closing socket connection...");
+        try {
+            sock.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(1);
+    }
+
+    /**
+     * Reads an int from user input, keeps trying untill an int is put in
+     * @param prompt Message to be shown in the terminal
+     * @return
+     */
     private int readInt(String prompt) {
         int value = 0;
         boolean intRead = false;
@@ -223,6 +290,11 @@ public class Client extends Thread {
         return value;
     }
 
+    /**
+     * Reads a String from user input
+     * @param prompt Message to be shown in the terminal
+     * @return
+     */
     private String readMove(String prompt) {
         String value = "";
         boolean intRead = false;
@@ -259,5 +331,14 @@ public class Client extends Thread {
 
     protected int getGameId() {
         return this.gameId;
+    }
+    protected String getUserName() {
+        return userName;
+    }
+
+    public void askHint() {
+        BoardStateValue boardStateValue = new BoardStateValue(board,colour);
+        int bestMove = boardStateValue.bestMove();
+        gui.addStone(bestMove, Colour.GREEN);
     }
 }

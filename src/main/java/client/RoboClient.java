@@ -29,15 +29,15 @@ public class RoboClient extends Client {
     public void determineMove() {
         BoardStateValue stateValue = new BoardStateValue(super.getBoard(), super.getColour());
         if (getLastMove() == -1 && stateValue.checkWin()) {
-            talk(ResponseBuilder.move(super.getGameId(), super.getName(), "-1"));
+            talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "-1"));
             return;
         }
         int bestMove = stateValue.bestMove();
         if (bestMove == -2) {
-            talk(ResponseBuilder.move(super.getGameId(), super.getName(), "" + randomMove()));
+            talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "" + randomMove()));
             return;
         } else {
-            talk(ResponseBuilder.move(super.getGameId(), super.getName(), "" + bestMove));
+            talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "" + bestMove));
             return;
         }
     }

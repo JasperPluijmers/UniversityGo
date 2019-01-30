@@ -7,12 +7,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A group on a board containing a set of fields with the same colour that are a neighbour of at least one other
+ * field in the set, built by BoardUpdater.buildGroup
+ */
 public class Group {
 
     private Map<Colour, Set<Integer>> neighbours;
     private Set<Integer> groupMembers;
     private Colour colour;
 
+    /**
+     * Constructs an empty Group
+     * @param colour
+     */
     public Group(Colour colour) {
         this.colour = colour;
         this.neighbours = new HashMap<>();

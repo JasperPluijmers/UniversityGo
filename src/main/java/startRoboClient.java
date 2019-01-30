@@ -24,7 +24,5 @@ public class startRoboClient {
 
         RoboClient client = new RoboClient("Jasper", host, 2001, true);
         client.start();
-
-
     }
 }

@@ -2,6 +2,9 @@ package server.utilities;
 
 import go.utility.Colour;
 
+/**
+ * Builds responses based on the protocol specified on: https://github.com/JasperPluijmers/GoProtocol
+ */
 public class ResponseBuilder {
     public static String acknowledgeHandshake(int gameId, boolean isLeader) {
         String leader;

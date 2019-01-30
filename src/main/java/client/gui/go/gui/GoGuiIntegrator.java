@@ -21,6 +21,8 @@ public class GoGuiIntegrator implements GoGui {
         this.client = client;
 
         wrappee.setPassButtonListener(() -> client.clickMove(-1));
+        wrappee.setHintButtonListener(() -> client.askHint());
+        wrappee.setPlaceHolderButtonListener(index -> client.clickMove(index));
         wrappee.setRematchButtonListener(() -> client.handleRematch(0), () -> client.handleRematch(1));
     }
 
@@ -47,7 +49,7 @@ public class GoGuiIntegrator implements GoGui {
     public synchronized void addPlaceholderStone(int x, int y) {
         Platform.runLater(() -> {
             try {
-                wrappee.addPlaceHolderStone(x, y, client);
+                wrappee.addPlaceHolderStone(x, y);
             } catch (InvalidCoordinateException e) {
                 e.printStackTrace();
             }

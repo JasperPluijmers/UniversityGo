@@ -2,6 +2,7 @@ package client.gui.go.gui;
 
 import client.Client;
 import client.gui.go.gui.utilities.ClickListener;
+import client.gui.go.gui.utilities.ClickMoveListener;
 import go.utility.Colour;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -40,12 +41,15 @@ public class GoGuiImpl extends Application {
     private Node hint = null;
     private boolean turn;
     private Button passButton;
+    private Button hintButton;
 
 
     private Stage finishWindow;
     private Stage rematchWindow;
 
     private ClickListener passButtonListener;
+    private ClickListener hintButtonListener;
+    private ClickMoveListener placeHolderButtonListener;
     private ClickListener noListener;
     private ClickListener yesListener;
 
@@ -84,11 +88,18 @@ public class GoGuiImpl extends Application {
         initNewBoard();
         initializationLatch.countDown();
         addPassButton();
+        addHintButton();
 
     }
 
     public void setPassButtonListener(ClickListener clickListener) {
         this.passButtonListener = clickListener;
+    }
+    public void setHintButtonListener(ClickListener clickListener) {
+        this.hintButtonListener = clickListener;
+    }
+    public void setPlaceHolderButtonListener(ClickMoveListener clickListener) {
+        this.placeHolderButtonListener = clickListener;
     }
 
     private void initNewBoard() {
@@ -110,6 +121,14 @@ public class GoGuiImpl extends Application {
         passButton.setLayoutY(0);
         passButton.setOnMouseClicked(event -> passButtonListener.onclick());
         root.getChildren().add(passButton);
+    }
+
+    private void addHintButton() {
+        hintButton = new Button("Hint");
+        hintButton.setLayoutX(currentSquareSize * currentBoardSize);
+        hintButton.setLayoutY(0);
+        hintButton.setOnMouseClicked(event -> hintButtonListener.onclick());
+        root.getChildren().add(hintButton);
     }
 
     private void initBoardLines() {
@@ -151,6 +170,14 @@ public class GoGuiImpl extends Application {
             case BLACK:
                 newStone.setFill(Color.BLACK);
                 break;
+            case GREEN:
+                newStone.setFill(Color.GREEN);
+                newStone.setOnMouseEntered(event -> newStone.setStroke(Color.BLACK));
+
+                newStone.setOnMouseExited(event -> newStone.setStroke(Color.TRANSPARENT));
+
+                newStone.setOnMouseClicked(event -> placeHolderButtonListener.onclick(y * currentBoardSize + x));
+
         }
 
         board[x][y] = newStone;
@@ -160,9 +187,10 @@ public class GoGuiImpl extends Application {
     public void setTurn(boolean turn) {
         this.turn = turn;
         passButton.setDisable(!turn);
+        hintButton.setDisable(!turn);
     }
 
-    public void addPlaceHolderStone(int x, int y, Client client) throws InvalidCoordinateException {
+    public void addPlaceHolderStone(int x, int y) throws InvalidCoordinateException {
         checkCoordinates(x, y);
         removeStone(x, y);
 
@@ -171,26 +199,11 @@ public class GoGuiImpl extends Application {
 
         newStone.setFill(Color.TRANSPARENT);
         if (turn) {
-            newStone.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    newStone.setStroke(Color.BLACK);
-                }
-            });
+            newStone.setOnMouseEntered(event -> newStone.setStroke(Color.BLACK));
 
-            newStone.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    newStone.setStroke(Color.TRANSPARENT);
-                }
-            });
+            newStone.setOnMouseExited(event -> newStone.setStroke(Color.TRANSPARENT));
 
-            newStone.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    client.clickMove(y * currentBoardSize + x);
-                }
-            });
+            newStone.setOnMouseClicked(event -> placeHolderButtonListener.onclick(y * currentBoardSize + x));
         }
         board[x][y] = newStone;
         root.getChildren().add(newStone);
@@ -260,7 +273,7 @@ public class GoGuiImpl extends Application {
             for (int x = 0; x < currentBoardSize; x++) {
                 for (int y = 0; y < currentBoardSize; y++) {
                     removeStone(x, y);
-                    addPlaceHolderStone(x, y, client);
+                    addPlaceHolderStone(x, y);
                 }
             }
         } catch (InvalidCoordinateException e) {

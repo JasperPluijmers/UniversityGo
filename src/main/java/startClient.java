@@ -10,6 +10,9 @@ import java.net.UnknownHostException;
 //NVC3449, 8000 <Luuk
 //localhost, 3001
 
+/**
+ * Class for testing purposes, please ignore.
+ */
 public class startClient {
     public static void main(String[] args) throws IOException {
 

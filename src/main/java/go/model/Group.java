@@ -8,8 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A group on a board containing a set of fields with the same colour that are a neighbour of at least one other
- * field in the set, built by BoardUpdater.buildGroup
+ * A group on a board containing a set of fields with the
+ * same colour that are a neighbour of at least one other
+ * field in the set, built by BoardUpdater.buildGroup.
  */
 public class Group {
 
@@ -18,9 +19,9 @@ public class Group {
     private Colour colour;
 
     /**
-     * Constructs an empty Group
+     * Constructs an empty Group.
      *
-     * @param colour
+     * @param colour Colour of the group
      */
     public Group(Colour colour) {
         this.colour = colour;

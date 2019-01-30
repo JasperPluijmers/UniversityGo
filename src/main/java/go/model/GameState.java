@@ -6,7 +6,8 @@ import go.utility.Status;
 import java.util.List;
 
 /**
- * State of a game of Go that knows a board, the players, whose turn it is and if the last move was a pass.
+ * State of a game of Go that knows a board, the players,
+ * whose turn it is and if the last move was a pass.
  * At any moment this object has to complete state of a game of Go.
  */
 public class GameState {

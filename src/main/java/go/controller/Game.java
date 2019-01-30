@@ -19,7 +19,8 @@ public class Game {
      * Constructs a Game object, which in turn constructs a gamestate with a new board.
      *
      * @param dimension The size of the board of the game
-     * @param players   List of players in the game, first player in this list plays as black, the second one plays as white
+     * @param players   List of players in the game, first player in this list plays as black,
+     *                  the second one plays as white
      */
     public Game(int dimension, List<Player> players) {
         this.state = new GameState(new Board(dimension), players);
@@ -30,7 +31,7 @@ public class Game {
     }
 
     /**
-     * Changes status to playing and initiates the first move
+     * Changes status to playing and initiates the first move.
      */
     public void play() {
         state.setStatus(Status.PLAYING);
@@ -38,9 +39,9 @@ public class Game {
     }
 
     /**
-     * Notifies players they need to play a move or finishes the game if two players passed
+     * Notifies players they need to play a move or finishes the game if two players passed.
      */
-    public void nextTurn() {
+    private void nextTurn() {
         switch (state.getStatus()) {
             case PLAYING:
                 state.currentPlayer().requestMove(state.getBoard());
@@ -56,12 +57,12 @@ public class Game {
     }
 
     /**
-     * Notifies the players that a move has been played
+     * Notifies the players that a move has been played.
      *
      * @param move   The move that has been played
      * @param colour The colour of the move that has been played
      */
-    public void acknowledgeMove(int move, Colour colour) {
+    private void acknowledgeMove(int move, Colour colour) {
         for (Player player : state.getPlayers()) {
             player.acknowledgeMove(move, colour);
         }
@@ -69,18 +70,20 @@ public class Game {
 
     /**
      * Plays a certain move on the board.
-     * Returns true if a move has been played or false if if the move was not played because it was not valid
+     * Returns true if a move has been played or false if
+     * the move was not played because it was not valid.
      *
-     * @param move   Move that has to be played, either "PASS" or "PLAY n" where n should be an integer
-     * @param colour
-     * @return
+     * @param move   Move that has to be played, either "PASS"
+     *               or "PLAY n" where n should be an integer
+     * @param colour Colour of the played move
+     * @return True if move has been played, false if it has not
      */
     public boolean playMove(String move, Colour colour) {
         //Logic for passing
         if (move.equals("PASS")) {
 
             //If the last move was also a pass, finish the game, otherwise flag last move as pass
-            if (state.getPassed() == true) {
+            if (state.getPassed()) {
                 state.setStatus(Status.FINISHED);
             } else {
                 state.setPassed(true);

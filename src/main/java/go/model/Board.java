@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Board class that represents a Go board
+ * Board class that represents a Go board.
  */
 public class Board {
 
@@ -15,7 +15,7 @@ public class Board {
     private ArrayList<int[]> history;
 
     /**
-     * Constructs Board of a given size
+     * Constructs Board of a given size.
      *
      * @param size Dimension of the length of the board, the board will contain size*size fields
      */
@@ -27,10 +27,10 @@ public class Board {
     }
 
     /**
-     * Constructs a board with a certain boardstate and history
+     * Constructs a board with a certain boardstate and history.
      *
-     * @param boardState
-     * @param history
+     * @param boardState Array of ints
+     * @param history List of String of ints
      */
     public Board(int[] boardState, ArrayList<int[]> history) {
         this.boardState = boardState.clone();
@@ -39,7 +39,7 @@ public class Board {
     }
 
     /**
-     * Makes a deepcopy of the board
+     * Makes a deepcopy of the board.
      *
      * @return new Board object that is a copy of the current Board
      */
@@ -48,9 +48,9 @@ public class Board {
     }
 
     /**
-     * Checks if a field is an EMPTY field
+     * Checks if a field is an EMPTY field.
      *
-     * @param index
+     * @param index Index that is checked
      * @return true if the field is EMPTY, false if the field is not EMPTY
      */
     public boolean isempty(int index) {
@@ -58,16 +58,16 @@ public class Board {
     }
 
     /**
-     * Updates the history of the board
+     * Updates the history of the board.
      */
     public void updateHistory() {
         history.add(getBoardState());
     }
 
     /**
-     * String representation that shows the board in a TUI
+     * String representation that shows the board in a TUI.
      *
-     * @return
+     * @return String representation
      */
     public String toString() {
         String boardString = "";
@@ -88,18 +88,20 @@ public class Board {
     }
 
     /**
-     * Creates a string representation that complies to the protocol
+     * Creates a string representation that complies to the protocol.
      *
      * @return A string of length dimension * dimension containing 0, 1 and 2
      */
     public String stringRep() {
-        return Arrays.toString(boardState).replace("[", "").replace("]", "").replace(" ", "").replace(",", "");
+        return Arrays.toString(boardState).replace("[",
+                "").replace("]", "")
+                .replace(" ", "").replace(",", "");
     }
 
     /**
-     * updates the board from a string that complies to the protocol
+     * updates the board from a string that complies to the protocol.
      *
-     * @param stringRep
+     * @param stringRep Protocol String
      */
     public void fromString(String stringRep) {
         for (int i = 0; i < boardState.length; i++) {
@@ -109,10 +111,10 @@ public class Board {
     }
 
     /**
-     * Checks if field is a valid field in the board
+     * Checks if field is a valid field in the board.
      *
-     * @param index
-     * @return
+     * @param index Index that needs to be checked
+     * @return True if index is part of the board, false if it is not
      */
     public boolean isField(int index) {
         return index >= 0 && index < dimension * dimension;

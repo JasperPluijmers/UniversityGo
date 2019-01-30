@@ -28,7 +28,8 @@ public enum Colour {
                 return colour;
             }
         }
-        throw new IllegalArgumentException("No value in enum found corresponding to value: " + value);
+        throw new IllegalArgumentException("No value in enum found corresponding to value: " +
+                "" + value);
     }
 
     public int getValue() {

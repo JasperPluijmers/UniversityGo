@@ -5,7 +5,7 @@ import go.model.Board;
 import java.util.Arrays;
 
 /**
- * Helper class that has a single method that checks if a move is valid
+ * Helper class that has a single method that checks if a move is valid.
  */
 public class MoveValidator {
 
@@ -26,7 +26,8 @@ public class MoveValidator {
         }
 
         if (!boardCopy.isempty(move)) {
-            //System.out.println(String.format("Field %d is already occupied by %s", move, board.getEntry(move)));
+            //System.out.println(String.format("Field %d is
+            // already occupied by %s", move, board.getEntry(move)));
             return false;
         }
         boardCopy.setEntry(move, colour);

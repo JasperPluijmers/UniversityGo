@@ -76,7 +76,7 @@ public class ProtocolHandler {
         return true;
     }
 
-    public void sanitizeSetConfig(String[] command) {
+    private void sanitizeSetConfig(String[] command) {
         int colour;
         int boardSize;
         System.out.println(Arrays.toString(command));
@@ -99,11 +99,12 @@ public class ProtocolHandler {
         clientHandler.handleUnknownCommand("Did not recognize protocol for: SET_CONFIG");
     }
 
-    public void sanitizeHandshake(String[] command) {
+    private void sanitizeHandshake(String[] command) {
         if (command.length == 2) {
             clientHandler.handleHandshake(command[1]);
         } else {
-            clientHandler.handleUnknownCommand("Handshake format is wrong, perhaps a + in the username?");
+            clientHandler.handleUnknownCommand("Handshake format is " +
+                    "wrong, perhaps a + in the username?");
         }
 
     }

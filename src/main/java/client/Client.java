@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /**
- * A Client to communicate with a Server playing a game of Go coomplying with the following protocol: https://github.com/JasperPluijmers/GoProtocol
+ * A Client to communicate with a Server playing a game of Go coomplying with the following protocol: https://github.com/JasperPluijmers/GoProtocol.
  */
 public class Client extends Thread {
 
@@ -31,7 +31,7 @@ public class Client extends Thread {
     private int lastMove;
 
     /**
-     * Constructs a Client object, tries to create a socket connetion with a specified address and port
+     * Constructs a Client object, tries to create a socket connetion with a specified address and port.
      *
      * @param name   Username of the client, used in communication with the server
      * @param host   Hostaddress of the server
@@ -54,7 +54,7 @@ public class Client extends Thread {
     }
 
     /**
-     * Runnable method that checks for incoming messages over the socket and routes them to the a ProtocolHandler
+     * Runnable method that checks for incoming messages over the socket and routes them to the a ProtocolHandler.
      */
     public void run() {
         String nextLine;
@@ -69,7 +69,7 @@ public class Client extends Thread {
     }
 
     /**
-     * Method sends a String over the socket to the server
+     * Method sends a String over the socket to the server.
      *
      * @param message String that has to be sent
      */
@@ -86,9 +86,9 @@ public class Client extends Thread {
     }
 
     /**
-     * Sets gameId sent from the server in the handshake
+     * Sets gameId sent from the server in the handshake.
      *
-     * @param gameId
+     * @param gameId gameID of the game
      */
     public void handleHandshake(int gameId) {
         this.gameId = gameId;
@@ -98,7 +98,7 @@ public class Client extends Thread {
     /**
      * Set colour and username sent from the server, creates a new board and starts the gui.
      *
-     * @param config
+     * @param config Config String from the protocol
      */
     public void handleAcknowledgeConfig(String[] config) {
         this.colour = Colour.getByInt(Integer.parseInt(config[2]));
@@ -111,9 +111,9 @@ public class Client extends Thread {
     }
 
     /**
-     * Parses the winmessage from the server and sends it to the gui
+     * Parses the winmessage from the server and sends it to the gui.
      *
-     * @param message
+     * @param message Match finished command from the protocol
      */
     public void gameFinished(String[] message) {
         String[] score = message[3].split(";");
@@ -125,7 +125,7 @@ public class Client extends Thread {
     }
 
     /**
-     * Asks for configuration input via the terminal, then sends it to the server
+     * Asks for configuration input via the terminal, then sends it to the server.
      */
     public void makeConfig() {
         int prefColor = readInt("What is your preferred colour? black (1) or white (2)");
@@ -135,9 +135,9 @@ public class Client extends Thread {
     }
 
     /**
-     * Updates current status to the status update from the server, if turn of hte player notifies the gui and updates the board.
+     * Updates current status to the status update from the server, if turn of the player notifies the gui and updates the board.
      *
-     * @param status
+     * @param status Status string complying to the protocol
      */
     public void updateStatus(String status) {
         String[] stati = status.split(";");
@@ -159,9 +159,9 @@ public class Client extends Thread {
     }
 
     /**
-     * Method that gets called when clicked on the gui, sends the corresponding move to the server
+     * Method that gets called when clicked on the gui, sends the corresponding move to the server.
      *
-     * @param index
+     * @param index Index of move that has been clicked
      */
     public void clickMove(int index) {
         if (turn) {
@@ -190,11 +190,11 @@ public class Client extends Thread {
     }
 
     /**
-     * Updates the current with the latest board representation
+     * Updates the current with the latest board representation.
      *
-     * @param boardString
+     * @param boardString String that contains new board information
      */
-    public void updateGui(String boardString) {
+    private void updateGui(String boardString) {
         gui.clearBoard();
         for (int i = 0; i < boardString.length(); i++) {
             switch (boardString.charAt(i)) {
@@ -209,9 +209,9 @@ public class Client extends Thread {
     }
 
     /**
-     * Highlights the last move on the gui
+     * Highlights the last move on the gui.
      *
-     * @param move
+     * @param move Move to be highligted
      */
     public void highlightMove(String move) {
         lastMove = Integer.parseInt(move.split(";")[0]);
@@ -221,10 +221,11 @@ public class Client extends Thread {
     }
 
     /**
-     * Disconnects from the server if opponent does not want a rematch or starts a new board and refreshes gui if a
+     * Disconnects from the server if opponent does not want a rematch
+     * or starts a new board and refreshes gui if a
      * rematch is initated.
      *
-     * @param value
+     * @param value 0 if otherplayer does not want a rematch, 1 if a rematch is going to be initiated
      */
     public void handleAcknowledgeRematch(int value) {
         if (value == 0) {
@@ -242,7 +243,7 @@ public class Client extends Thread {
     /**
      * Notifies server of choice of rematch.
      *
-     * @param value
+     * @param value 0 if not want a rematch, 1 if want a rematch
      */
     public void handleRematch(int value) {
         talk(ResponseBuilder.setRematch(value));
@@ -252,7 +253,7 @@ public class Client extends Thread {
     }
 
     /**
-     * notifies gui so a rematch popup can be shown
+     * notifies gui so a rematch popup can be shown.
      */
     public void handleRequestRematch() {
         if (hasGui) {
@@ -261,7 +262,7 @@ public class Client extends Thread {
     }
 
     /**
-     * Closes the socket connection, then terminates the program
+     * Closes the socket connection, then terminates the program.
      */
     private void shutdown() {
         System.out.println("Closing socket connection...");
@@ -274,10 +275,10 @@ public class Client extends Thread {
     }
 
     /**
-     * Reads an int from user input, keeps trying untill an int is put in
+     * Reads an int from user input, keeps trying until an int is put in.
      *
      * @param prompt Message to be shown in the terminal
-     * @return
+     * @return int from user input
      */
     private int readInt(String prompt) {
         int value = 0;
@@ -296,14 +297,12 @@ public class Client extends Thread {
     }
 
     /**
-     * Reads a String from user input
+     * Reads a String from user input.
      *
      * @param prompt Message to be shown in the terminal
-     * @return
+     * @return String from user input
      */
     private String readMove(String prompt) {
-        String value = "";
-        boolean intRead = false;
         Scanner line = new Scanner(System.in);
         do {
             System.out.print(prompt);
@@ -320,8 +319,7 @@ public class Client extends Thread {
                     }
                 }
             }
-        } while (!intRead);
-        return value;
+        } while (true);
     }
 
     protected int getLastMove() {

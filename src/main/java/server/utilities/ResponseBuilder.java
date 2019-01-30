@@ -3,7 +3,8 @@ package server.utilities;
 import go.utility.Colour;
 
 /**
- * Builds responses based on the protocol specified on: https://github.com/JasperPluijmers/GoProtocol
+ * Builds responses based on the protocol
+ * specified on: https://github.com/JasperPluijmers/GoProtocol.
  */
 public class ResponseBuilder {
     public static String acknowledgeHandshake(int gameId, boolean isLeader) {
@@ -16,8 +17,11 @@ public class ResponseBuilder {
         return "ACKNOWLEDGE_HANDSHAKE+" + gameId + "+" + leader;
     }
 
-    public static String acknowledgeConfig(String username, Colour colour, int dimension, String gameState, String opponent) {
-        return "ACKNOWLEDGE_CONFIG+" + username + "+" + colour.getValue() + "+" + dimension + "+" + gameState + "+" + opponent;
+    public static String acknowledgeConfig(
+            String username, Colour colour,
+                                           int dimension, String gameState, String opponent) {
+        return "ACKNOWLEDGE_CONFIG+" + username +
+                "+" + colour.getValue() + "+" + dimension + "+" + gameState + "+" + opponent;
     }
 
     public static String wrongMove() {

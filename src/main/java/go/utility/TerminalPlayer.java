@@ -17,9 +17,10 @@ public class TerminalPlayer implements Player {
         this.playerNumber = playerNumber;
     }
 
-    public void playMove(Board board) {
+    private void playMove(Board board) {
         System.out.println(board);
-        game.playMove(readMove(String.format("What is your move, player %d? (HELP for options)", playerNumber)), colour);
+        game.playMove(readMove(String.format("What is your move, " +
+                "player %d? (HELP for options)", playerNumber)), colour);
     }
 
     @Override
@@ -58,8 +59,6 @@ public class TerminalPlayer implements Player {
     }
 
     private String readMove(String prompt) {
-        String value = "";
-        boolean intRead = false;
         Scanner line = new Scanner(System.in);
         do {
             System.out.print(prompt);
@@ -76,7 +75,6 @@ public class TerminalPlayer implements Player {
                     }
                 }
             }
-        } while (!intRead);
-        return value;
+        } while (true);
     }
 }

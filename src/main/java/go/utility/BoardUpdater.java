@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class made for updating a board when a move is made
+ * Class made for updating a board when a move is made.
  */
 public class BoardUpdater {
 
@@ -35,7 +35,8 @@ public class BoardUpdater {
                 //Add all fields of the group to the checked fields
                 checkedFields.addAll(currentGroup.getGroupMembers());
 
-                //Check for freedoms of the group, if they are 0 and group does not contain the last move,
+                //Check for freedoms of the group, if they are 0
+                // and group does not contain the last move,
                 // remove the group from the board
                 if (currentGroup.freedoms() == 0 && !currentGroup.getGroupMembers().contains(move)) {
                     for (int groupMember : currentGroup.getGroupMembers()) {
@@ -57,8 +58,10 @@ public class BoardUpdater {
     }
 
     /**
-     * Takes an index, a Group object and a Board to fill the Group object with its neighbours and groupmembers by checking
-     * the neighbours of the index and either adding them to the neighbours of the Group or adding them as groupmembers. If added
+     * Takes an index, a Group object and a Board to fill the Group
+     * object with its neighbours and groupmembers by checking
+     * the neighbours of the index and either adding them to the
+     * neighbours of the Group or adding them as groupmembers. If added
      * as groupmember the method is called again on that index.
      *
      * @param index Index that is contained in the group
@@ -74,8 +77,10 @@ public class BoardUpdater {
 
         //Loop over the neighbours of the current index
         for (Integer i : neighbours) {
-            //Check the status of the neighbour., if it is the same colour and is not yet contained in the groupmembers
-            if (board.getEntry(i) == board.getEntry(index) && !group.getGroupMembers().contains(i)) {
+            //Check the status of the neighbour.,
+            // if it is the same colour and is not yet contained in the groupmembers
+            if (board.getEntry(i) == board.getEntry(index)
+                    && !group.getGroupMembers().contains(i)) {
                 //Add the neighbour to the group members
                 group.addGroupMember(i);
                 //Restart this method on the neighbout
@@ -97,7 +102,7 @@ public class BoardUpdater {
      * @return A set of Integer which are the neighbour of the index
      */
 
-    public static Set<Integer> neighbours(int index, Board board) {
+    private static Set<Integer> neighbours(int index, Board board) {
         Set<Integer> neighbours = new HashSet<>();
 
         if (index % board.getDimension() != 0) {

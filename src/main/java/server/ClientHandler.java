@@ -13,7 +13,8 @@ import java.net.Socket;
 import java.util.Map;
 
 /**
- * The ClientHandler class deals with all communication between a client and the server. On detecting an input the input is
+ * The ClientHandler class deals with all communication
+ * between a client and the server. On detecting an input the input is
  * ran through the ProtocolHandler which routes commands back to the ClientHandler.
  */
 public class ClientHandler extends Thread implements Player {
@@ -34,10 +35,11 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Constructs a ClientHandler with a given Server and Socket.
-     * Opens a communication channels to the socket and starts this communication by starting a new thread on this object.
+     * Opens a communication channels to the socket and
+     * starts this communication by starting a new thread on this object.
      *
-     * @param server
-     * @param clientSocket
+     * @param server Server object
+     * @param clientSocket Socket
      */
     public ClientHandler(Server server, Socket clientSocket) {
         this.server = server;
@@ -45,7 +47,8 @@ public class ClientHandler extends Thread implements Player {
 
         try {
             this.inStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.outStream = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+            this.outStream = new BufferedWriter(
+                    new OutputStreamWriter(this.socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +58,8 @@ public class ClientHandler extends Thread implements Player {
 
     /**
      * Method that runs in a thread, reads incoming messages. Checks if they correspond to the
-     * protocol and routes it to the ProtocolHandler or sends an unknown command if not part of the protocol.
+     * protocol and routes it to the ProtocolHandler
+     * or sends an unknown command if not part of the protocol.
      */
     public void run() {
         try {
@@ -77,17 +81,18 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Checks if a String is part of the protocol by checking if it corresponds to the regex pattern.
+     * Checks if a String is part of the protocol
+     * by checking if it corresponds to the regex pattern.
      *
      * @param message String to be checked
-     * @return
+     * @return true if corresponds to protocol format
      */
-    public boolean isProtocol(String message) {
+    private boolean isProtocol(String message) {
         return message.matches(".*\\+.*");
     }
 
     /**
-     * Sends a String over the Socket
+     * Sends a String over the Socket.
      *
      * @param message String sent over the Socket
      */
@@ -114,7 +119,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Communicates a disconnection of the socket with the GameHandler
+     * Communicates a disconnection of the socket with the GameHandler.
      */
     private void disconnect() {
         gameHandler.quit(this);
@@ -130,14 +135,14 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sends wrong move command to the client
+     * Sends wrong move command to the client.
      */
     public void handleWrongMove() {
         talk(ResponseBuilder.wrongMove());
     }
 
     /**
-     * Plays a move in the Game
+     * Plays a move in the Game.
      *
      * @param move can either be -1 for pass or a valid index for the board
      */
@@ -156,7 +161,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Communicates a quit to the GameHandler, then tries to close the socket connection
+     * Communicates a quit to the GameHandler, then tries to close the socket connection.
      */
     public void handleQuit() {
         gameHandler.quit(this);
@@ -164,7 +169,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Communicates config preferences to the GameHandler
+     * Communicates config preferences to the GameHandler.
      *
      * @param colour    preferred colour of the client
      * @param boardSize preferred boardsize of the client
@@ -174,7 +179,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sets username and communicates handshake to the GameHandler
+     * Sets username and communicates handshake to the GameHandler.
      *
      * @param username preferred username of the client
      */
@@ -186,7 +191,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sends unknown command command over the socket
+     * Sends unknown command command over the socket.
      *
      * @param message Error message to be sent with the unknown command command
      */
@@ -196,14 +201,14 @@ public class ClientHandler extends Thread implements Player {
 
 
     /**
-     * Sends a request for config over the Socket
+     * Sends a request for config over the Socket.
      */
     public void requestConfig() {
         talk(ResponseBuilder.requestConfig());
     }
 
     /**
-     * Sends acknowledgement of the config over the socket
+     * Sends acknowledgement of the config over the socket.
      *
      * @param dimension Size of length of the board the game is going to be played on
      * @param gameState Current gamestate
@@ -214,7 +219,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sends wrongmove command over the socket
+     * Sends wrongmove command over the socket.
      */
     @Override
     public void wrongMove() {
@@ -222,7 +227,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sets acknowledgement of a move over the Socket
+     * Sets acknowledgement of a move over the Socket.
      *
      * @param move   Move that has been played, can be -1 for pass or a valid index on the board
      * @param colour Colour of the move that has been played, can be 1 for black or 2 for white
@@ -233,20 +238,23 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Calculate and sends score to the client when game is finished due to a disconnection or a forfeit.
+     * Calculate and sends score to the client when game
+     * is finished due to a disconnection or a forfeit.
      */
     public void unexpectedFinishGame() {
         Map<Colour, Double> finalScore = gameHandler.score();
         gameHandler.setStatus(Status.FINISHED);
-        talk(ResponseBuilder.gameFinished(gameId, username, finalScore.get(Colour.BLACK) + ";" + finalScore.get(Colour.WHITE), "Other player quit the game"));
+        talk(ResponseBuilder.gameFinished(
+                gameId, username, finalScore.get(Colour.BLACK)
+                + ";" + finalScore.get(Colour.WHITE), "Other player quit the game"));
     }
 
     /**
-     * Sends score to the client when a game is finished due to two passes
+     * Sends score to the client when a game is finished due to two passes.
      *
-     * @param winner
-     * @param score
-     * @param reason
+     * @param winner Name of the winner
+     * @param score Map of the score
+     * @param reason Reason the game finished
      */
     @Override
     public void finishGame(String winner, Map<Colour, Double> score, String reason) {
@@ -255,7 +263,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sets flag that corresponds to if the client is able to make a move
+     * Sets flag that corresponds to if the client is able to make a move.
      *
      * @param board Current Board of the game
      */
@@ -265,7 +273,7 @@ public class ClientHandler extends Thread implements Player {
     }
 
     /**
-     * Sends Acknowledgement of a rematch command
+     * Sends Acknowledgement of a rematch command.
      *
      * @param value 1 if a rematch is going to be played, 0 if no rematch is going to be played.
      */

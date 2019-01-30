@@ -29,7 +29,7 @@ public class GameHandler extends Thread {
 
 
     /**
-     * Constructs a GameHandler object
+     * Constructs a GameHandler object.
      *
      * @param gameId given by the server
      */
@@ -40,7 +40,7 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Adds a player to this GameHandler
+     * Adds a player to this GameHandler.
      *
      * @param player that needs to be added to gameHandler
      */
@@ -49,7 +49,8 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Starts config for a player. If leading player the prefered configurations are asked otherwise configurations are set.
+     * Starts config for a player. If leading player
+     * the prefered configurations are asked otherwise configurations are set.
      *
      * @param player The Player that tries to set the config
      */
@@ -58,7 +59,8 @@ public class GameHandler extends Thread {
             players.put(player, Colour.EMPTY);
             leadingPlayer = player;
             leadingPlayer.setLeader();
-            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(gameId, leadingPlayer.getLeader()));
+            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(
+                    gameId, leadingPlayer.getLeader()));
 
             leadingPlayer.setGameId(gameId);
             leadingPlayer.requestConfig();
@@ -68,7 +70,8 @@ public class GameHandler extends Thread {
             secondaryPlayer = player;
             secondaryPlayer.setGameId(gameId);
             this.secondaryPlayer.setGameHandler(this);
-            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(gameId, leadingPlayer.getLeader()));
+            leadingPlayer.talk(ResponseBuilder.acknowledgeHandshake(
+                    gameId, leadingPlayer.getLeader()));
 
             if (dimension != 0) {
                 setupSecondPlayer();
@@ -77,7 +80,7 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Sets the config to be used for the construction of the Game object
+     * Sets the config to be used for the construction of the Game object.
      *
      * @param colour    Preferred colour of the leading player
      * @param dimension Preferred size of the length of the board
@@ -102,7 +105,8 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Starts a new game with the given configuration, then orders ClientHandlers to acknowledge the config and commences first turn of the game
+     * Starts a new game with the given configuration, then
+     * orders ClientHandlers to acknowledge the config and commences first turn of the game
      */
     public void startNewGame() {
         if (players.get(leadingPlayer) == Colour.BLACK) {
@@ -112,13 +116,15 @@ public class GameHandler extends Thread {
         }
 
         for (ClientHandler player : players.keySet()) {
-            player.acknowledgeConfig(this.dimension, gameState(), otherPlayer(player).getUsername());
+            player.acknowledgeConfig(this.dimension,
+                    gameState(), otherPlayer(player).getUsername());
         }
         game.play();
     }
 
     /**
-     * Handles the sudden disconnection of a Player by notifying the other Player and finishing the game.
+     * Handles the sudden disconnection of a
+     * Player by notifying the other Player and finishing the game.
      *
      * @param clientHandler The client that disconnects
      */
@@ -133,17 +139,20 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Constructs and returns a string representation of the gamestate
+     * Constructs and returns a string representation of the gamestate.
      *
      * @return
      */
     public String gameState() {
-        return status + ";" + game.getState().getCurrentColour() + ";" + game.getState().getBoard().stringRep();
+        return status + ";" + game.getState().getCurrentColour()
+                + ";" + game.getState().getBoard().stringRep();
     }
 
     /**
-     * Handles the rematch functionality. If a player does not want a rematch, notifies the other player and disconnects everyone.
-     * If a player wants a rematch, check if the other players also wants a rematch and flag itself as wanting a rematch.
+     * Handles the rematch functionality. If a player does not want
+     * a rematch, notifies the other player and disconnects everyone.
+     * If a player wants a rematch,
+     * check if the other players also wants a rematch and flag itself as wanting a rematch.
      * If both players want a rematch start a new game with the same configuration.
      *
      * @param value  0 if player does not want a rematch, 1 if player wants a rematch
@@ -156,6 +165,7 @@ public class GameHandler extends Thread {
                 player.closeSocket();
                 otherPlayer(player).acknowledgeRematch(value);
                 otherPlayer(player).closeSocket();
+                break;
             case 1:
                 if (!otherPlayer(player).getWantsRematch()) {
                     player.setWantsRematch(true);
@@ -170,10 +180,10 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Returns the other ClientHandler object in the game
+     * Returns the other ClientHandler object in the game.
      *
      * @param player not the other player?
-     * @return
+     * @return The other player
      */
     private ClientHandler otherPlayer(ClientHandler player) {
         if (player.equals(leadingPlayer)) {
@@ -184,9 +194,9 @@ public class GameHandler extends Thread {
     }
 
     /**
-     * Calculates score of the current board
+     * Calculates score of the current board.
      *
-     * @return
+     * @return Map of the current score
      */
     public Map<Colour, Double> score() {
         return Score.score(game.getState().getBoard());

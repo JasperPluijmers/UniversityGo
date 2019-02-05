@@ -9,7 +9,7 @@ import go.utility.Score;
 
 import java.util.*;
 
-public class BoardStateValue {
+public class BoardStateValue2 {
 
     private List<Group> groups;
     private Board board;
@@ -18,14 +18,14 @@ public class BoardStateValue {
     private Map<Colour, Double> score;
     private double value;
 
-    private final double SCORE_CONSTANT = 3;
+    private final double SCORE_CONSTANT = 4;
     private final double FREEDOM_CONSTANT = 1;
 
-    public BoardStateValue(Board board, Colour colour) {
+    public BoardStateValue2(Board board, Colour colour) {
         this.board = board;
         this.colour = colour;
         makeGroups();
-        totalFreedoms();
+        biggestFreedom();
         score = Score.score(board);
         value = calculateBoardValue();
     }
@@ -36,8 +36,8 @@ public class BoardStateValue {
         for (int i = 0; i < board.getDimension() * board.getDimension(); i++) {
             if (board.getEntry(i).equals(Colour.EMPTY) && MoveValidator.validateMove(i, colour, board) && !isEye(i)) {
                 double currentMoveValue = pointDif(i);
+                /*System.out.println("index: " + i + ", value: " + currentMoveValue);*/
                 if (currentMoveValue > bestMoveValue) {
-                    System.out.println("index: " + i + ", value: " + currentMoveValue);
                     bestMove = i;
                     bestMoveValue = currentMoveValue;
                 }
@@ -45,38 +45,6 @@ public class BoardStateValue {
         }
         return bestMove;
     }
-
-    private static Set<Integer> extendedNeighbours(int index, Board board) {
-        Set<Integer> neighbours = BoardUpdater.neighbours(index, board);
-
-        if (index % board.getDimension() != 0 && board.isField(index - board.getDimension())) {
-            neighbours.add(index - board.getDimension() - 1);
-        }
-        if (index % board.getDimension() != 0 && board.isField(index + board.getDimension())) {
-            neighbours.add(index + board.getDimension() - 1);
-        }
-        if (index % board.getDimension() != board.getDimension() - 1 && board.isField(index - board.getDimension())) {
-            neighbours.add(index - board.getDimension() + 1);
-        }
-        if (index % board.getDimension() != board.getDimension() - 1 && board.isField(index + board.getDimension())) {
-            neighbours.add(index + board.getDimension() + 1);
-        }
-        return neighbours;
-    }
-
-
-    private boolean isEye(int index) {
-        Object[] neighbours = extendedNeighbours(index, board).toArray();
-        for (Object neighbour : neighbours) {
-            if (board.getEntry((int)neighbour) == Colour.EMPTY) {
-                return false;
-            } else if (board.getEntry((int)neighbour) == otherColour()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     public boolean checkWin() {
         return score.get(colour) > score.get(otherColour());
@@ -87,7 +55,6 @@ public class BoardStateValue {
         Board newBoard = board.deepCopy();
         newBoard.setEntry(index, colour);
         BoardUpdater.updateBoard(index, newBoard);
-
         if (newBoard.getEntry(index) != colour) {
             return -10000;
         }
@@ -95,8 +62,13 @@ public class BoardStateValue {
             return -10000;
         }
 
+        BoardStateValue2 newBoardStateValue = new BoardStateValue2(newBoard, colour);
 
-        return new BoardStateValue(newBoard, colour).getValue() - value;
+        if (newBoardStateValue.score.get(colour) < score.get(colour)) {
+            return -10000;
+        }
+
+        return new BoardStateValue2(newBoard, colour).getValue() - value;
     }
 
     public double getValue() {
@@ -104,26 +76,32 @@ public class BoardStateValue {
     }
 
     public double calculateBoardValue() {
-        System.out.println("Scorepoints: " + scorePoints());
-        System.out.println("freedomPoints: " + freedomPoints());
-        return scorePoints() * freedomPoints();
+        /*System.out.println("Scorepoints: " + scorePoints());
+        System.out.println("freedomPoints: " + freedomPoints());*/
+        return scorePoints() + freedomPoints();
     }
 
     private double freedomPoints() {
         return FREEDOM_CONSTANT * (1 + freedoms.get(colour)) / (1 + freedoms.get(otherColour()));
     }
 
-    private Map<Colour, Integer> totalFreedoms() {
+
+    private Map<Colour, Integer> biggestFreedom() {
         freedoms = new HashMap<>();
         freedoms.put(Colour.BLACK, 0);
         freedoms.put(Colour.WHITE, 0);
         for (Group group : groups) {
             if (group.getColour() != Colour.EMPTY) {
-                freedoms.put(group.getColour(), group.freedoms());
+                if (group.freedoms() > freedoms.get(group.getColour())) {
+                    freedoms.put(group.getColour(), group.freedoms());
+                }
             }
         }
         return freedoms;
     }
+
+
+
 
     private double scorePoints() {
         return SCORE_CONSTANT * (1 + score.get(colour)) / (1 + score.get(otherColour()));
@@ -145,4 +123,35 @@ public class BoardStateValue {
             }
         }
     }
+
+    private static Set<Integer> extendedNeighbours(int index, Board board) {
+        Set<Integer> neighbours = BoardUpdater.neighbours(index, board);
+
+        if (index % board.getDimension() != 0 && board.isField(index - board.getDimension())) {
+            neighbours.add(index - board.getDimension() - 1);
+        }
+        if (index % board.getDimension() != 0 && board.isField(index + board.getDimension())) {
+            neighbours.add(index + board.getDimension() - 1);
+        }
+        if (index % board.getDimension() != board.getDimension() - 1 && board.isField(index - board.getDimension())) {
+            neighbours.add(index - board.getDimension() + 1);
+        }
+        if (index % board.getDimension() != board.getDimension() - 1 && board.isField(index + board.getDimension())) {
+            neighbours.add(index + board.getDimension() + 1);
+        }
+        return neighbours;
+    }
+
+    private boolean isEye(int index) {
+        Object[] neighbours = extendedNeighbours(index, board).toArray();
+        for (Object neighbour : neighbours) {
+            if (board.getEntry((int)neighbour) == Colour.EMPTY) {
+                return false;
+            } else if (board.getEntry((int)neighbour) == otherColour()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

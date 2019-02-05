@@ -102,7 +102,7 @@ public class BoardUpdater {
      * @return A set of Integer which are the neighbour of the index
      */
 
-    private static Set<Integer> neighbours(int index, Board board) {
+    public static Set<Integer> neighbours(int index, Board board) {
         Set<Integer> neighbours = new HashSet<>();
 
         if (index % board.getDimension() != 0) {

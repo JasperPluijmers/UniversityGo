@@ -1,6 +1,6 @@
 package client;
 
-import client.roboresources.BoardStateValue;
+
 import client.roboresources.BoardStateValue2;
 import client.utilities.ResponseBuilder;
 import go.model.Board;
@@ -12,20 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RoboClient extends Client {
+public class RoboClient2 extends Client {
 
     private boolean firstMove = true;
-    public RoboClient(String name, InetAddress host, int port, boolean hasGui) throws IOException {
+    public RoboClient2(String name, InetAddress host, int port, boolean hasGui) throws IOException {
         super(name, host, port, hasGui);
     }
 
     @Override
     public void askMove() {
-/*        try {
-            this.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
         determineMove();
     }
 
@@ -35,16 +30,20 @@ public class RoboClient extends Client {
                 talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), 72 + ""));
                 firstMove = false;
                 return;
+            } else if (MoveValidator.validateMove(61, super.getColour(), super.getBoard())) {
+                talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), 61 + ""));
+                firstMove = false;
+                return;
             }
         }
-        BoardStateValue stateValue = new BoardStateValue(super.getBoard(), super.getColour());
+        BoardStateValue2 stateValue = new BoardStateValue2(super.getBoard(), super.getColour());
         if (getLastMove() == -1 && stateValue.checkWin()) {
             talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "-1"));
             return;
         }
         int bestMove = stateValue.bestMove();
         if (bestMove == -2) {
-            talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "" + -1));
+            talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "-1"));
             return;
         } else {
             talk(ResponseBuilder.move(super.getGameId(), super.getUserName(), "" + bestMove));

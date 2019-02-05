@@ -1,4 +1,5 @@
-import client.RandomRoboClient;
+import client.RoboClient;
+import client.RoboClient2;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,19 +12,23 @@ import java.net.UnknownHostException;
 /**
  * Class for testing purposes, please ignore.
  */
-public class startRandomRoboClient {
+public class startRoboClient2 {
     public static void main(String[] args) throws IOException {
+
+        String hostname = "localhost";
+        int port = 2001;
+
 
         InetAddress host = null;
 
         try {
-            host = InetAddress.getByName("localhost");
+            host = InetAddress.getByName(hostname  );
         } catch (UnknownHostException e) {
             System.out.println("ERROR: no valid hostname!");
             System.exit(0);
         }
 
-        RandomRoboClient client = new RandomRoboClient("Jasper", host, 2001, true);
+        RoboClient2 client = new RoboClient2("RoboJasper", host, port, true);
         client.start();
     }
 }

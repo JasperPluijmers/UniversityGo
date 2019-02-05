@@ -5,6 +5,8 @@ import go.controller.Game;
 import go.utility.Colour;
 import go.utility.Score;
 import go.utility.Status;
+import net.gpedro.integrations.slack.SlackApi;
+import net.gpedro.integrations.slack.SlackMessage;
 import server.utilities.ResponseBuilder;
 
 import java.util.Arrays;
@@ -119,6 +121,8 @@ public class GameHandler extends Thread {
             player.acknowledgeConfig(this.dimension,
                     gameState(), otherPlayer(player).getUsername());
         }
+        /*SlackApi api = new SlackApi("https://hooks.slack.com/services/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");
+        api.call(new SlackMessage( "A new game has started between: " + leadingPlayer.getUsername() + " and " + secondaryPlayer.getUsername()));*/
         game.play();
     }
 

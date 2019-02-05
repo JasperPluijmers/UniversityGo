@@ -5,6 +5,8 @@ import go.model.Board;
 import go.utility.Colour;
 import go.utility.Player;
 import go.utility.Status;
+import net.gpedro.integrations.slack.SlackApi;
+import net.gpedro.integrations.slack.SlackMessage;
 import server.utilities.ProtocolHandler;
 import server.utilities.ResponseBuilder;
 
@@ -247,6 +249,10 @@ public class ClientHandler extends Thread implements Player {
         talk(ResponseBuilder.gameFinished(
                 gameId, username, finalScore.get(Colour.BLACK)
                 + ";" + finalScore.get(Colour.WHITE), "Other player quit the game"));
+        SlackApi api = new SlackApi("https://hooks.slack.com/services/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");
+        /*api.call(new SlackMessage( ResponseBuilder.gameFinished(
+                gameId, username, finalScore.get(Colour.BLACK)
+                        + ";" + finalScore.get(Colour.WHITE), "Other player quit the game")));*/
     }
 
     /**
@@ -259,6 +265,8 @@ public class ClientHandler extends Thread implements Player {
     @Override
     public void finishGame(String winner, Map<Colour, Double> score, String reason) {
         talk(ResponseBuilder.gameFinished(gameId, winner, score.get(Colour.BLACK) + ";" + score.get(Colour.WHITE), reason));
+        /*SlackApi api = new SlackApi("https://hooks.slack.com/services/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");
+        api.call(new SlackMessage( ResponseBuilder.gameFinished(gameId, winner, score.get(Colour.BLACK) + ";" + score.get(Colour.WHITE), reason)));*/
         talk(ResponseBuilder.requestRematch());
     }
 
